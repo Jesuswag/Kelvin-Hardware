@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Basket — UI Demo</title>
+<style>
+  :root{
+    --width: 390px;
+    --bg-top: #0B1B2A;
+    --bg-mid: #071728;
+    --bg-bottom: #073A78;
+    --card-bg: #0E3E6C;
+    --accent: #00FFD4;
+    --muted: #0B2B57;
+    --white: #ffffff;
+    --rounded: 16px;
+    --nav-height: 78px;
+  }
+
+  /* page container centered for desktop */
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    background:#081821;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:20px 0;
+  }
+
+  /* phone-sized viewport (matches your 390x844) */
+  .phone{
+    width:var(--width);
+    height:844px;
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, #064f59 100%);
+  }
+
+  /* header */
+  .header{
+    height:98px;
+    background: linear-gradient(180deg,#063A79,#0B3F78);
+    display:flex;
+    align-items:center;
+    padding:14px 16px;
+    gap:10px;
+    box-sizing:border-box;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .logo{
+    font-style:italic;
+    font-weight:700;
+    color:var(--white);
+    font-size:22px;
+    flex: 0 0 auto;
+  }
+
+  .search-pill{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background: #fff;
+    height:38px;
+    border-radius:999px;
+    padding:0 12px;
+    box-sizing:border-box;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.12);
+  }
+  .search-pill input{
+    border:0;
+    outline: none;
+    font-size:14px;
+    flex:1;
+    min-width:0;
+  }
+  .search-pill svg{ width:18px; height:18px; opacity:.6; display:block; }
+
+  .avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background: url('milei.png') center/cover no-repeat;
+    flex:0 0 auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    border:3px solid rgba(255,255,255,0.06);
+  }
+
+  /* main scroll area */
+  .content{
+    position:absolute;
+    top:98px;
+    left:0;
+    right:0;
+    /* MODIFICACIÓN: dejar espacio extra para el checkout fijo */
+    bottom: calc(var(--nav-height) + 140px);
+    padding:16px;
+    box-sizing:border-box;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* product card */
+  .product {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background: linear-gradient(180deg, #0F4470, #0C3B6A);
+    border-radius:14px;
+    padding:12px;
+    margin-bottom:18px;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.22) inset, 0 6px 20px rgba(0,0,0,0.25);
+    position:relative;
+    height:92px;
+  }
+
+  .product .img{
+    width:72px;
+    height:72px;
+    border-radius:12px;
+    background: #fff center/contain no-repeat;
+    flex:0 0 auto;
+    margin-left:2px;
+  }
+
+  .product .meta{
+    color:var(--white);
+    font-size:14px;
+    line-height:1.1;
+  }
+  .product .meta .title{ font-weight:500; margin-bottom:6px; }
+  .product .meta .price{ opacity:0.95; color:#dfeff7; font-size:13px; }
+
+  /* right icon (cart, rent, wrench) */
+  .product .action{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    width:46px;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(255,255,255,0.06);
+    border-radius:10px;
+  }
+  .product .action svg{ width:28px; height:28px; fill: #fff; opacity:0.95; }
+
+  /* large check widget (nota: esta regla original queda para usos internos) */
+  .checkout-block{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    margin-top:18px;
+    margin-bottom:18px;
+  }
+
+  .coupon{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    flex:1;
+  }
+  .coupon input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:3px solid #fff;
+    font-weight:600;
+    letter-spacing:1px;
+    font-size:16px;
+    background:transparent;
+    color: #fff;
+    outline:none;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+  }
+  .coupon .small-btn{
+    background: #0A3A6E;
+    padding:8px 12px;
+    border-radius:10px;
+    display:inline-block;
+    color:#fff;
+    font-weight:600;
+    width:170px;
+    text-align:center;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+  }
+
+  .checkout-widget{
+    width:120px;
+    height:120px;
+    border-radius:16px;
+    background: linear-gradient(180deg,#06407F,#0B5AA5);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:var(--white);
+    font-weight:700;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    position:relative;
+  }
+  .checkout-widget .vb{
+    position:absolute;
+    top:8px;
+    right:10px;
+    font-size:12px;
+    opacity:0.9;
+  }
+  .checkout-widget svg{ width:64px; height:64px; opacity:0.95; }
+
+  /* spacer to push content above nav */
+  .spacer{ height:40px; }
+
+  /* bottom nav */
+  .nav{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:var(--nav-height);
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    padding:10px 12px;
+    gap:10px;
+    box-sizing:border-box;
+    background:linear-gradient(180deg,#0B3970,#073A78);
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.4);
+  }
+
+  .nav .nav-item{
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+  }
+  .nav .nav-item img{ width:48px; height:48px; object-fit:contain; filter: brightness(0) invert(1); }
+
+  /* small responsive tweaks */
+  @media (max-width:420px){
+    .phone{ transform: scale(0.98); }
+  }
+
+  /* ==== NUEVAS REGLAS (para checkout fijo encima de la nav) ==== */
+  /* Posicionar el checkout-block fuera del scroll, encima de la nav */
+  .checkout-block{
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: calc(var(--nav-height) + 8px); /* 8px de separación sobre la nav */
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    z-index: 40;
+    /* estilo ligero para que destaque sobre el fondo */
+    background: linear-gradient(180deg, rgba(11,59,115,0.12), rgba(11,59,115,0.06));
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+  }
+
+  .checkout-block .coupon { flex: 1 1 auto; min-width: 0; }
+  .checkout-block .coupon input { width: 100%; box-sizing: border-box; }
+  .checkout-block .checkout-widget { flex: 0 0 120px; }
+
+</style>
+</head>
+<body>
+  <div class="phone" role="application" aria-label="Carrito">
+
+    <!-- header -->
+    <div class="header" role="banner">
+      <div class="logo">K/H</div>
+
+      <div class="search-pill" aria-hidden="false">
+        <input type="search" placeholder="Search here ..." aria-label="Buscar" />
+        <svg viewBox="0 0 24 24" aria-hidden style="flex:0 0 auto;">
+          <circle cx="11" cy="11" r="7" stroke="#0B2B57" stroke-width="1.6" fill="none" />
+          <path d="M20 20 L15.5 15.5" stroke="#0B2B57" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="avatar" title="Perfil"></div>
+    </div>
+
+    <!-- scrollable content -->
+    <div class="content" role="main">
+
+      <!-- product list -->
+      <div class="product" id="p-nuts">
+        <div class="img" style="background-image: url('nutsandbolts.png'); background-size:contain;background-position:center;"></div>
+        <div class="meta">
+          <div class="title">Nuts and bolts x25</div>
+          <div class="price">3.000 V-Bucks</div>
+        </div>
+        <div class="action" title="Añadir/quitar">
+          <!-- basket icon (sin ruedas) -->
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M3 6h18l-3 10H6L3 6z" fill="#fff"/>
+            <path d="M8 6a4 4 0 018 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="product" id="p-wrench">
+        <div class="img" style="background-image: url('wrench.png'); background-size:contain;background-position:center;"></div>
+        <div class="meta">
+          <div class="title">Wrench x2</div>
+          <div class="price">8.000 V-Bucks</div>
+        </div>
+        <div class="action" title="Rent">
+          <!-- rent sign icon (rectángulo con palo hacia abajo) -->
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <rect x="5" y="3" width="14" height="10" rx="1.8" fill="#fff"></rect>
+            <path d="M12 13v6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M9 6h8" stroke="#0B3F78" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+
+        </div>
+      </div>
+
+      <div class="product" id="p-hammer">
+        <div class="img" style="background-image: url('hammer.png'); background-size:contain;background-position:center;"></div>
+        <div class="meta">
+          <div class="title">Hammer x1</div>
+          <div class="price">10.000 V-Bucks</div>
+        </div>
+        <div class="action" title="Tool">
+          <!-- wrench icon (mejorada) -->
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M17 2l-2.5 2.5a2.5 2.5 0 0 0 3.5 3.5L20 5a7 7 0 0 1-8 10l-4 4a1.5 1.5 0 0 1-2 0l-1-1a1.5 1.5 0 0 1 0-2l4-4A7 7 0 0 1 17 2z"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+    </div>
+
+    <!-- -------------- checkout moved fuera del scroll and pasted here -------------- -->
+    <div class="checkout-block">
+      <div class="coupon">
+        <input type="text" value="FREEHAMMER25" aria-label="Cupón" />
+        <div class="small-btn" role="button" aria-pressed="false">Add discount code</div>
+      </div>
+
+      <div class="checkout-widget" role="button" aria-label="Checkout">
+        <div class="vb">21.000 V-Bucks</div>
+        <!-- check circle -->
+        <svg viewBox="0 0 64 64" aria-hidden>
+          <circle cx="32" cy="32" r="28" stroke="#fff" stroke-width="4" fill="none"/>
+          <path d="M20 34l8 8 16-20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- bottom nav -->
+    <nav class="nav" role="navigation" aria-label="Navegación">
+      <div class="nav-item">
+        <img src="home.png" alt="Inicio"/>
+      </div>
+      <div class="nav-item">
+        <img src="binoculars.png" alt="Explorar"/>
+      </div>
+      <div class="nav-item">
+        <img src="resumen.png" alt="Resumen"/>
+      </div>
+    </nav>
+
+  </div>
+</body>
+</html>
