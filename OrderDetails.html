@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to bottom, #003f7f, #008c8c);
+      color: #fff;
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    .section-box {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .white-box {
+      background: #fff;
+      color: #000;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .calendar-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      color: #000;
+      max-width: 320px;
+      margin: auto;
+    }
+
+    /* PAYMENT METHODS */
+    .pay-option {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      width: 95px;
+      height: 95px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .pay-option input {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      accent-color: #007bff;
+    }
+    .pay-option img {
+      max-height: 45px;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      color: #000;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header class="p-3 d-flex align-items-center" style="background:#004a99; border-bottom-left-radius:20px; border-bottom-right-radius:20px;">
+    <h4 class="m-0 fw-bold">K/H</h4>
+    <h5 class="m-0 ms-3">Order details</h5>
+  </header>
+
+  <main class="container mt-4">
+
+    <div class="section-box">
+      <h6>User details</h6>
+      <div class="white-box d-flex justify-content-between align-items-center">
+        <span>Sample User, sample@mail.com, +0000000</span>
+        <a href="#" class="text-primary">Modify</a>
+      </div>
+    </div>
+
+    <div class="section-box">
+      <h6>Address</h6>
+      <div class="white-box d-flex justify-content-between align-items-center">
+        <span>Sample Street, Sample City</span>
+        <a href="#" class="text-primary">Modify</a>
+      </div>
+    </div>
+
+    <div class="section-box text-center">
+      <h6>Rental Dates</h6>
+      <div class="calendar-box">
+        <p class="fw-bold">March 2023</p>
+        <table class="table table-borderless text-center">
+          <tr><td>Su</td><td>Mo</td><td>Tu</td><td>We</td><td>Th</td><td>Fr</td><td>Sa</td></tr>
+          <tr><td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+          <tr><td>6</td><td>7</td><td class="bg-primary text-white rounded-circle">8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+          <tr><td>13</td><td>14</td><td>15</td><td>16</td><td class="bg-primary text-white rounded-circle">17</td><td>18</td><td>19</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-box text-center">
+      <h6>Paying methods</h6>
+      <div class="d-flex justify-content-around mt-3">
+
+        <!-- PAYPAL (selected) -->
+        <label class="pay-option">
+          <input type="radio" name="pay" checked>
+          <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png">
+        </label>
+
+        <!-- CASH -->
+        <label class="pay-option">
+          <input type="radio" name="pay">
+          <img src="https://cdn-icons-png.flaticon.com/512/39/39052.png">
+        </label>
+
+        <!-- BITCOIN -->
+        <label class="pay-option">
+          <input type="radio" name="pay">
+          <img src="https://cdn-icons-png.flaticon.com/512/1040/1040231.png">
+        </label>
+
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-primary px-4">Confirm</button>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <span>Home</span>
+    <span>Explore</span>
+    <span class="text-primary fw-bold">Basket</span>
+    <span>Profile</span>
+  </nav>
+
+</body>
+</html>
