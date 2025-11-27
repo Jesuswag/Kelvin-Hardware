@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Deals — UI Demo</title>
+
+<style>
+  :root{
+    --width: 390px;
+    --bg-top: #0B1B2A;
+    --bg-mid: #071728;
+    --bg-bottom: #073A78;
+    --white: #ffffff;
+    --accent: #00FFD4;
+    --nav-height: 78px;
+  }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:20px 0;
+    background:#081821;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
+  }
+
+  .phone{
+    width:var(--width);
+    height:844px;
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 45%, var(--bg-bottom) 100%);
+    box-shadow:0 8px 30px rgba(0,0,0,0.55);
+  }
+
+  /* header */
+  .header{
+    height:98px;
+    background: linear-gradient(180deg,#063A79,#0B3F78);
+    display:flex;
+    align-items:center;
+    padding:14px 16px;
+    gap:10px;
+    box-sizing:border-box;
+  }
+
+  .logo{
+    flex:0 0 auto;
+    font-style:italic;
+    font-weight:700;
+    color:white;
+    font-size:22px;
+  }
+
+  .search-pill{
+    flex:1;
+    background:#fff;
+    height:38px;
+    border-radius:999px;
+    padding:0 12px;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    display:flex;
+    box-shadow:0 2px 0 rgba(0,0,0,0.15);
+  }
+
+  .search-pill input{
+    border:0; outline:none; flex:1;
+    font-size:14px;
+  }
+
+  .avatar-small{
+    width:44px; height:44px;
+    border-radius:50%;
+    background:url('milei.png') center/cover no-repeat;
+    border:3px solid rgba(255,255,255,0.1);
+    box-shadow:0 2px 6px rgba(0,0,0,0.45);
+  }
+
+  /* content */
+  .content{
+    position:absolute;
+    top:98px;
+    left:0; right:0;
+    bottom:var(--nav-height);
+    overflow:auto;
+    padding:16px;
+    color:white;
+    box-sizing:border-box;
+  }
+
+  .deals-btn{
+    width:180px;
+    height:70px;
+    background:rgba(255,255,255,0.09);
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.12);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+  }
+
+  .deals-img{
+    width:26px; height:26px;
+    filter:invert(1);
+  }
+
+  .banner{
+    width:100%; height:220px;
+    background:url('Deals.png') center/cover no-repeat;
+    border-radius:12px;
+    margin-bottom:12px;
+  }
+
+  .title{
+    width:100%; text-align:center;
+    font-weight:700;
+    margin:6px 0 12px 0;
+  }
+
+  .countdown{
+    width:100%; height:110px;
+    border:3px solid #ff3b00;
+    border-radius:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:38px;
+    font-family:monospace;
+    color:#ff3b00;
+    background:rgba(0,0,0,0.45);
+    margin:16px 0;
+  }
+
+  .products{
+    display:flex;
+    gap:12px;
+    margin-top:22px;
+  }
+
+  .product{
+    width:120px;
+    background:rgba(255,255,255,0.07);
+    border-radius:12px;
+    padding:10px;
+    text-align:center;
+  }
+
+  .product img{ width:100%; height:110px; object-fit:contain; }
+  .pname{ font-size:14px; margin:6px 0; }
+  .oldprice{ text-decoration:line-through; font-size:12px; opacity:.7; }
+  .newprice{ font-size:15px; font-weight:700; color:#ff3b00; }
+
+  /* bottom nav */
+  .nav{
+    position:absolute;
+    bottom:0;
+    left:0; right:0;
+    height:var(--nav-height);
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    background:linear-gradient(180deg,#0B3970,#073A78);
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    box-shadow:0 -6px 20px rgba(0,0,0,0.45);
+    padding:10px;
+  }
+
+  .nav-item img{
+    width:42px; height:42px;
+    filter:brightness(0) invert(1);
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="header">
+    <div class="logo">K/H</div>
+
+    <div class="search-pill">
+      <input type="search" placeholder="Search here ..." />
+    </div>
+
+    <div class="avatar-small"></div>
+  </div>
+
+  <div class="content">
+    <div class="deals-btn">
+      <img class="deals-img" src="discount.png"/>
+      <span>Deals</span>
+    </div>
+
+    <div class="banner"></div>
+    <div class="title">🤑UNBEATABLE PRICES🤑</div>
+    <div class="title">🔥2-FOR-1 ON CHAINSAWS 🔥<br> BEFORE NOVEMBER 2ND</div>
+
+    <div class="countdown">96:00:00</div>
+
+    <div class="products">
+      <div class="product">
+        <img src="sword.png" />
+        <div class="pname">Ruler-Sword</div>
+        <div class="oldprice">12.90€</div>
+        <div class="newprice">8.99€</div>
+      </div>
+
+      <div class="product">
+        <img src="chainsaw.png" />
+        <div class="pname">Chainsaw</div>
+        <div class="oldprice">12.90€</div>
+        <div class="newprice">9.99€</div>
+      </div>
+
+      <div class="product">
+        <img src="spatula.png" />
+        <div class="pname">Spatula</div>
+        <div class="oldprice">12.99€</div>
+        <div class="newprice">3.99€</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-item"><img src="home.png" /></div>
+    <div class="nav-item"><img src="binoculars.png" /></div>
+    <div class="nav-item"><img src="resumen.png" /></div>
+  </nav>
+</div>
+
+<script>
+/* === Cuenta atrás funcional === */
+const countdownEl = document.querySelector('.countdown');
+let secondsLeft = 96 * 3600;
+setInterval(()=>{
+  secondsLeft--;
+  if(secondsLeft < 0) secondsLeft = 0;
+  const h = String(Math.floor(secondsLeft/3600)).padStart(2,'0');
+  const m = String(Math.floor(secondsLeft%3600/60)).padStart(2,'0');
+  const s = String(secondsLeft%60).padStart(2,'0');
+  countdownEl.textContent = `${h}:${m}:${s}`;
+},1000);
+
+/* === Modo daltonismo global (recibe cambios desde otra pantalla) === */
+function applyColorblind(mode){
+  const root = document.documentElement;
+  const filters = {
+    none: 'none',
+    protanopia: 'url(#protanopia)',
+    deuteranopia: 'url(#deuteranopia)',
+    tritanopia: 'url(#tritanopia)'
+  };
+  root.style.filter = filters[mode] || 'none';
+}
+
+// Escuchar eventos cross‑pantalla
+window.addEventListener('message', e =>{
+  if(e.data?.colorblindMode){ applyColorblind(e.data.colorblindMode); }
+});
+</script>
+</body>
+</html>

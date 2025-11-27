@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Profile — Colorblind Filter</title>
+
+<style>
+  :root{
+    --width:390px;
+    --bg-top:#0B1B2A;
+    --bg-mid:#071728;
+    --bg-bottom:#073A78;
+    --accent:#00FFD4;
+    --white:#fff;
+    --nav-height:78px;
+  }
+
+  body{
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:20px 0;
+    min-height:100vh;
+    background:#081821;
+    font-family:Inter, system-ui;
+  }
+
+  .phone{
+    width:var(--width);
+    height:844px;
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    background:linear-gradient(180deg,var(--bg-top),var(--bg-mid),var(--bg-bottom));
+    box-shadow:0 8px 30px rgba(0,0,0,0.55);
+
+    /* ESTE FILTRO SE CAMBIA DINÁMICAMENTE */
+    filter: url(#cb-normal);
+  }
+
+  /* HEADER */
+  .header{
+    height:98px;
+    background:linear-gradient(180deg,#063A79,#0B3F78);
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+    box-sizing:border-box;
+  }
+  .logo{
+    font-style:italic;
+    font-weight:700;
+    font-size:22px;
+    color:white;
+  }
+
+  .search-pill{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:white;
+    height:38px;
+    border-radius:999px;
+    padding:0 12px;
+  }
+  .search-pill input{
+    border:0; outline:none; flex:1;
+  }
+  .avatar-small{
+    width:44px; height:44px; border-radius:50%;
+    background:url("milei.png") center/cover no-repeat;
+    border:3px solid rgba(255,255,255,0.1);
+  }
+
+  /* CONTENT */
+  .content{
+    position:absolute;
+    top:98px; left:0; right:0;
+    bottom:var(--nav-height);
+    overflow:auto;
+    padding:16px;
+    color:white;
+  }
+
+  .profile-pic{
+    width:160px; height:160px;
+    border-radius:50%;
+    margin:0 auto;
+    background:url("milei.png") center/cover no-repeat;
+    box-shadow:0 0 20px rgba(0,0,0,0.45);
+  }
+  .hello{
+    text-align:center;
+    font-size:20px;
+    font-weight:600;
+    margin-top:12px;
+  }
+
+  .section-title{
+    margin-top:26px;
+    margin-bottom:12px;
+    opacity:.9;
+  }
+
+  /* UI */
+  .row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .select-pill{
+    background:rgba(255,255,255,0.1);
+    padding:8px 14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.15);
+    color:white;
+  }
+
+  select{
+    background:transparent;
+    color:white;
+    border:none;
+    font-size:15px;
+    outline:none;
+  }
+
+  .slider{
+    -webkit-appearance:none;
+    width:140px;
+    height:10px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.18);
+    outline:none;
+  }
+  .slider::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:22px; height:22px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 12px rgba(0,255,200,0.6);
+  }
+
+  .slider-value{
+    padding:4px 12px;
+    background:rgba(255,255,255,0.12);
+    border-radius:10px;
+  }
+
+  /* Ishihara */
+  .ishihara-box{
+    background:rgba(255,255,255,.06);
+    border:2px solid rgba(255,255,255,0.15);
+    padding:12px;
+    border-radius:16px;
+    margin-top:28px;
+  }
+  .ishihara-img{
+    width:100%; height:240px;
+    background:url("daltonico.png") center/cover no-repeat;
+    border-radius:12px;
+  }
+
+  /* NAV */
+  .nav{
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:var(--nav-height);
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    background:linear-gradient(180deg,#0B3970,#073A78);
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    box-shadow:0 -6px 20px rgba(0,0,0,0.45);
+  }
+
+  .nav-item img{
+    width:42px; height:42px;
+    filter:brightness(0) invert(1);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- === SVG COLOR FILTERS === -->
+<svg width="0" height="0">
+  <defs>
+
+    <!-- Normal -->
+    <filter id="cb-normal">
+      <feColorMatrix type="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 1 0" />
+    </filter>
+
+    <!-- Protanopia -->
+    <filter id="cb-prot">
+      <feColorMatrix type="matrix"
+        values="0.567 0.433 0     0 0
+                0.558 0.442 0     0 0
+                0      0.242 0.758 0 0
+                0 0 0 1 0" />
+    </filter>
+
+    <!-- Deuteranopia -->
+    <filter id="cb-deut">
+      <feColorMatrix type="matrix"
+        values="0.625 0.375 0     0 0
+                0.7   0.3   0     0 0
+                0      0.3   0.7   0 0
+                0 0 0 1 0" />
+    </filter>
+
+    <!-- Tritanopia -->
+    <filter id="cb-trit">
+      <feColorMatrix type="matrix"
+        values="0.95  0.05  0     0 0
+                0      0.43  0.57  0 0
+                0      0.475 0.525 0 0
+                0 0 0 1 0" />
+    </filter>
+
+    <!-- Achromatopsia (blanco y negro) -->
+    <filter id="cb-achro">
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+
+  </defs>
+</svg>
+
+<!-- PHONE -->
+<div class="phone" id="app-screen">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">K/H</div>
+    <div class="search-pill">
+      <input type="search" placeholder="Search here ..." />
+    </div>
+    <div class="avatar-small"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="profile-pic"></div>
+    <div class="hello">Hi, Javier</div>
+
+    <div class="section-title">Accessibility settings</div>
+
+    <!-- MODE -->
+    <div class="row">
+      <div>Colorblind mode</div>
+      <div class="select-pill">
+        <select id="mode">
+          <option value="normal">Normal</option>
+          <option value="prot">Protanope</option>
+          <option value="deut">Deuteranope</option>
+          <option value="trit">Tritanope</option>
+          <option value="achro">Achromatopsia</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- STRENGTH -->
+    <div class="row">
+      <div>Colorblind strength</div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <input type="range" min="0" max="100" value="100" id="strength" class="slider" />
+        <div class="slider-value" id="strengthLabel">100%</div>
+      </div>
+    </div>
+
+    <div class="ishihara-box">
+      <div class="ishihara-img"></div>
+    </div>
+
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav-item"><img src="home.png"></div>
+    <div class="nav-item"><img src="binoculars.png"></div>
+    <div class="nav-item"><img src="resumen.png"></div>
+  </div>
+
+</div>
+
+<script>
+/* === DYNAMIC COLORBLIND FILTER LOGIC === */
+
+const screen = document.getElementById("app-screen");
+const mode = document.getElementById("mode");
+const strength = document.getElementById("strength");
+const strengthLabel = document.getElementById("strengthLabel");
+
+function updateFilter(){
+  const m = mode.value;
+  const s = strength.value / 100;
+
+  strengthLabel.textContent = Math.round(s * 100) + "%";
+
+  // When strength < 1, we interpolate between NORMAL and the chosen filter
+  if(m === "normal"){
+    screen.style.filter = `url(#cb-normal)`;
+    return;
+  }
+
+  if(s === 1){
+    screen.style.filter = `url(#cb-${m})`;
+    return;
+  }
+
+  // Mix filters by applying saturate + opacity trick
+  // Normal UI + overlay of colorblind filter
+  screen.style.filter = `url(#cb-${m}) opacity(${s})`;
+}
+
+mode.addEventListener("change", updateFilter);
+strength.addEventListener("input", updateFilter);
+
+updateFilter();
+</script>
+
+</body>
+</html>
