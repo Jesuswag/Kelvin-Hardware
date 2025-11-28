@@ -290,22 +290,85 @@ const mode = document.getElementById("mode");
 const strength = document.getElementById("strength");
 const strengthLabel = document.getElementById("strengthLabel");
 
+// Código de reemplazo para la función updateFilter:
 function updateFilter(){
   const m = mode.value;
   const s = strength.value / 100;
   strengthLabel.textContent = Math.round(s * 100) + "%";
 
-  if(m === "normal"){
+  if(m === "normal" || s === 0){ // s === 0 significa 0% de daltonismo (normal)
     screen.style.filter = `url(#cb-normal)`;
     return;
   }
 
-  if(s === 1){
-    screen.style.filter = `url(#cb-${m})`;
-    return;
+  // Mapear el modo a la matriz de color (ejemplo para Protanope):
+  let baseMatrix = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]; // Matriz de color normal
+
+  let colorblindMatrix;
+  switch(m){
+    case "prot":
+      colorblindMatrix = [
+        0.567, 0.433, 0, 0, 0,
+        0.558, 0.442, 0, 0, 0,
+        0, 0.242, 0.758, 0, 0,
+        0, 0, 0, 1, 0
+      ];
+      break;
+      case "deut":
+      colorblindMatrix = [
+        0.625, 0.375, 0, 0, 0,
+        0.7, 0.3, 0, 0, 0,
+        0, 0.3, 0.7, 0, 0,
+        0, 0, 0, 1, 0
+      ];
+      break;
+      case "trit":
+      colorblindMatrix = [
+        0.95, 0.05, 0, 0, 0,
+        0, 0.43, 0.57, 0, 0,
+        0, 0.475, 0.525, 0, 0,
+        0, 0, 0, 1, 0
+      ];
+      break;
+      case "achro":
+      colorblindMatrix = [
+        0.213, 0.715, 0.072, 0, 0,
+        0.213, 0.715, 0.072, 0, 0,
+        0.213, 0.715, 0.072, 0, 0,
+        0, 0, 0, 1, 0
+      ];
+      break;
+    // Agrega casos para 'deut', 'trit', 'achro'
+    // ...
   }
 
-  screen.style.filter = `url(#cb-${m}) opacity(${s})`;
+  // Interpolación de la matriz: NewMatrix = Original * (1-s) + Colorblind * s
+  let interpolatedMatrix = [];
+  for(let i = 0; i < 20; i++){
+    interpolatedMatrix[i] = baseMatrix[i] * (1 - s) + colorblindMatrix[i] * s;
+  }
+
+  // Convierte el array en una cadena de valores
+  const matrixString = interpolatedMatrix.join(' ');
+
+  // Crea un filtro SVG dinámico con la matriz interpolada
+  const dynamicFilterId = `cb-interp-${m}`;
+  let svgDefs = document.querySelector('svg defs');
+  let existingFilter = document.getElementById(dynamicFilterId);
+
+  if(existingFilter) {
+      existingFilter.querySelector('feColorMatrix').setAttribute('values', matrixString);
+  } else {
+      const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+      filter.setAttribute('id', dynamicFilterId);
+      const feColorMatrix = document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix");
+      feColorMatrix.setAttribute('type', 'matrix');
+      feColorMatrix.setAttribute('values', matrixString);
+      filter.appendChild(feColorMatrix);
+      svgDefs.appendChild(filter);
+  }
+
+  screen.style.filter = `url(#${dynamicFilterId})`;
 }
 
 mode.addEventListener("change", updateFilter);
