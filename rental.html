@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rental — UI Demo</title>
+<style>
+  :root{
+    --width:390px;
+    --bg-top:#0B1B2A;
+    --bg-mid:#071728;
+    --bg-bottom:#073A78;
+    --white:#fff;
+    --accent:#00FFD4;
+    --nav-height:78px;
+  }
+  body{
+    margin:0;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;background:#081821;padding:20px 0;font-family:Inter,system-ui;
+  }
+  .phone{
+    width:var(--width);height:844px;border-radius:18px;overflow:hidden;position:relative;
+    background:linear-gradient(180deg,var(--bg-top),var(--bg-mid)45%,var(--bg-bottom));
+    box-shadow:0 8px 30px rgba(0,0,0,0.55);
+  }
+  .header{
+    height:98px;background:linear-gradient(180deg,#063A79,#0B3F78);
+    display:flex;align-items:center;gap:10px;padding:14px 16px;box-sizing:border-box;
+  }
+  .logo{color:#fff;font-size:22px;font-style:italic;font-weight:700;}
+  .search-pill{
+    flex:1;background:#fff;height:38px;border-radius:999px;display:flex;align-items:center;gap:10px;padding:0 12px;box-shadow:0 2px 0 rgba(0,0,0,0.15);
+  }
+  .search-pill input{border:0;outline:none;font-size:14px;flex:1;}
+  .avatar{width:44px;height:44px;border-radius:50%;background: url("milei.png") center/cover no-repeat;}
+
+  .content{
+    position:absolute;top:98px;left:0;right:0;bottom:var(--nav-height);
+    padding:18px;color:white;overflow:auto;box-sizing:border-box;
+  }
+  h2{margin:10px 0 6px 0;font-size:20px;font-weight:700;}
+  .field{
+    background:rgba(255,255,255,0.08);padding:10px 14px;border-radius:12px;margin-bottom:18px;position:relative;
+  }
+  .modify{position:absolute;right:14px;top:10px;color:var(--accent);font-size:12px;cursor:pointer;}
+  .calendar{
+    width:100%;height:260px;border-radius:16px;background:rgba(255,255,255,0.12);
+    padding:14px;box-sizing:border-box;margin-bottom:22px;
+  }
+  .pay-methods{display:flex;gap:12px;margin-top:10px;}
+  .pm{
+    flex:1;background:rgba(255,255,255,0.12);border-radius:14px;text-align:center;padding:10px;cursor:pointer;border:2px solid transparent;
+  }
+  .pm img{width:80px;height:50px;object-fit:contain;}
+  .pm.selected{border-color:var(--accent);}
+
+  .confirm{
+    margin-top:26px;width:100%;background:#0A3A6E;padding:14px 0;border-radius:12px;text-align:center;font-weight:700;color:white;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,0.25);
+  }
+  .nav{
+    position:absolute;bottom:0;left:0;right:0;height:var(--nav-height);
+    display:flex;justify-content:space-around;align-items:center;
+    background:linear-gradient(180deg,#0B3970,#073A78);
+    border-top-left-radius:20px;border-top-right-radius:20px;
+    box-shadow:0 -6px 20px rgba(0,0,0,0.45);
+  }
+  .nav-item img{width:42px;height:42px;filter:brightness(0) invert(1);} 
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="header">
+    <div class="logo">K/H</div>
+    <div class="search-pill"><input type="search" placeholder="Search here ..."></div>
+    <div class="avatar"></div>
+  </div>
+
+  <div class="content">
+    <h2>User details</h2>
+    <div class="field">Javier Milei, JMilei@yahoo.com <span class="modify">Modify</span></div>
+
+    <h2>Address</h2>
+    <div class="field">Pink House, Floor 9B<br>Albacete, Spain<span class="modify">Modify</span></div>
+
+    <h2>Rental Dates</h2>
+    <div class="calendar">
+      <img src="calendar.png"
+     alt="Calendar"
+     style="width:100%; border-radius:14px;" />
+    </div>
+
+    <h2>Paying methods</h2>
+    <div class="pay-methods">
+      <div class="pm" id="pm1"><img src="paypal.png"></div>
+      <div class="pm" id="pm2"><img src="card.jpg"></div>
+      <div class="pm" id="pm3"><img src="cash.png"></div>
+    </div>
+
+    <div class="confirm">Confirm</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-item"><img src="home.png"></div>
+    <div class="nav-item"><img src="binoculars.png"></div>
+    <div class="nav-item"><img src="resumen.png"></div>
+  </nav>
+</div>
+
+<script>
+// Selección de método de pago
+const methods = document.querySelectorAll('.pm');
+methods.forEach(m=>m.addEventListener('click',()=>{
+  methods.forEach(x=>x.classList.remove('selected'));
+  m.classList.add('selected');
+}));
+</script>
+
+</body>
+</html>
+
