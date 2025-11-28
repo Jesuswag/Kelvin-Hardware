@@ -228,10 +228,15 @@
     </div>
   </div>
 
+  <!-- === NAVIGATION WITH RESUMEN LINK === -->
   <nav class="nav">
-    <div class="nav-item"><img src="home.png" /></div>
-    <div class="nav-item"><img src="binoculars.png" /></div>
-    <div class="nav-item"><img src="resumen.png" /></div>
+    <div class="nav-item"><img src="home.png" alt="Inicio" /></div>
+    <div class="nav-item"><img src="binoculars.png" alt="Explorar" /></div>
+
+    <!-- EL ICONO RESUMEN AHORA ES UN LINK -->
+    <a href="basket.html" class="nav-item" style="text-decoration:none;">
+      <img src="resumen.png" alt="Resumen" />
+    </a>
   </nav>
 </div>
 
@@ -260,7 +265,7 @@ function applyColorblind(mode){
   root.style.filter = filters[mode] || 'none';
 }
 
-// Escuchar eventos cross‑pantalla
+// Escuchar eventos cross-pantalla
 window.addEventListener('message', e =>{
   if(e.data?.colorblindMode){ applyColorblind(e.data.colorblindMode); }
 });
