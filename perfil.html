@@ -35,9 +35,7 @@
     position:relative;
     background:linear-gradient(180deg,var(--bg-top),var(--bg-mid),var(--bg-bottom));
     box-shadow:0 8px 30px rgba(0,0,0,0.55);
-
-    /* ESTE FILTRO SE CAMBIA DINÁMICAMENTE */
-    filter: url(#cb-normal);
+    filter: url(#cb-normal); /* filtro */
   }
 
   /* HEADER */
@@ -107,7 +105,6 @@
     opacity:.9;
   }
 
-  /* UI */
   .row{
     display:flex;
     align-items:center;
@@ -152,7 +149,6 @@
     border-radius:10px;
   }
 
-  /* Ishihara */
   .ishihara-box{
     background:rgba(255,255,255,.06);
     border:2px solid rgba(255,255,255,0.15);
@@ -189,63 +185,45 @@
 </head>
 <body>
 
-<!-- === SVG COLOR FILTERS === -->
+<!-- === SVG FILTERS === -->
 <svg width="0" height="0">
   <defs>
+    <filter id="cb-normal"><feColorMatrix type="matrix"
+      values="1 0 0 0 0
+              0 1 0 0 0
+              0 0 1 0 0
+              0 0 0 1 0"/></filter>
 
-    <!-- Normal -->
-    <filter id="cb-normal">
-      <feColorMatrix type="matrix"
-        values="1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-                0 0 0 1 0" />
-    </filter>
+    <filter id="cb-prot"><feColorMatrix type="matrix"
+      values="0.567 0.433 0 0 0
+              0.558 0.442 0 0 0
+              0 0.242 0.758 0 0
+              0 0 0 1 0"/></filter>
 
-    <!-- Protanopia -->
-    <filter id="cb-prot">
-      <feColorMatrix type="matrix"
-        values="0.567 0.433 0     0 0
-                0.558 0.442 0     0 0
-                0      0.242 0.758 0 0
-                0 0 0 1 0" />
-    </filter>
+    <filter id="cb-deut"><feColorMatrix type="matrix"
+      values="0.625 0.375 0 0 0
+              0.7 0.3 0 0 0
+              0 0.3 0.7 0 0
+              0 0 0 1 0"/></filter>
 
-    <!-- Deuteranopia -->
-    <filter id="cb-deut">
-      <feColorMatrix type="matrix"
-        values="0.625 0.375 0     0 0
-                0.7   0.3   0     0 0
-                0      0.3   0.7   0 0
-                0 0 0 1 0" />
-    </filter>
+    <filter id="cb-trit"><feColorMatrix type="matrix"
+      values="0.95 0.05 0 0 0
+              0 0.43 0.57 0 0
+              0 0.475 0.525 0 0
+              0 0 0 1 0"/></filter>
 
-    <!-- Tritanopia -->
-    <filter id="cb-trit">
-      <feColorMatrix type="matrix"
-        values="0.95  0.05  0     0 0
-                0      0.43  0.57  0 0
-                0      0.475 0.525 0 0
-                0 0 0 1 0" />
-    </filter>
-
-    <!-- Achromatopsia (blanco y negro) -->
     <filter id="cb-achro">
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-
   </defs>
 </svg>
 
-<!-- PHONE -->
 <div class="phone" id="app-screen">
 
   <!-- HEADER -->
   <div class="header">
     <div class="logo">K/H</div>
-    <div class="search-pill">
-      <input type="search" placeholder="Search here ..." />
-    </div>
+    <div class="search-pill"><input type="search" placeholder="Search here ..." /></div>
     <div class="avatar-small"></div>
   </div>
 
@@ -257,7 +235,6 @@
 
     <div class="section-title">Accessibility settings</div>
 
-    <!-- MODE -->
     <div class="row">
       <div>Colorblind mode</div>
       <div class="select-pill">
@@ -271,7 +248,6 @@
       </div>
     </div>
 
-    <!-- STRENGTH -->
     <div class="row">
       <div>Colorblind strength</div>
       <div style="display:flex; gap:10px; align-items:center;">
@@ -286,18 +262,21 @@
 
   </div>
 
-  <!-- NAV -->
+  <!-- NAV (MODIFICADO: el resumen ahora es link a basket.html) -->
   <div class="nav">
     <div class="nav-item"><img src="home.png"></div>
     <div class="nav-item"><img src="binoculars.png"></div>
-    <div class="nav-item"><img src="resumen.png"></div>
+
+    <!-- Cambio realizado aquí -->
+    <a href="basket.html" class="nav-item" style="text-decoration:none;">
+      <img src="resumen.png">
+    </a>
   </div>
 
 </div>
 
 <script>
 /* === DYNAMIC COLORBLIND FILTER LOGIC === */
-
 const screen = document.getElementById("app-screen");
 const mode = document.getElementById("mode");
 const strength = document.getElementById("strength");
@@ -306,10 +285,8 @@ const strengthLabel = document.getElementById("strengthLabel");
 function updateFilter(){
   const m = mode.value;
   const s = strength.value / 100;
-
   strengthLabel.textContent = Math.round(s * 100) + "%";
 
-  // When strength < 1, we interpolate between NORMAL and the chosen filter
   if(m === "normal"){
     screen.style.filter = `url(#cb-normal)`;
     return;
@@ -320,8 +297,6 @@ function updateFilter(){
     return;
   }
 
-  // Mix filters by applying saturate + opacity trick
-  // Normal UI + overlay of colorblind filter
   screen.style.filter = `url(#cb-${m}) opacity(${s})`;
 }
 
