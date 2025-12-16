@@ -37,7 +37,6 @@
     box-shadow:0 8px 30px rgba(0,0,0,0.55);
   }
 
-  /* header */
   .header{
     height:98px;
     background: linear-gradient(180deg,#063A79,#0B3F78);
@@ -82,12 +81,11 @@
     box-shadow:0 2px 6px rgba(0,0,0,0.45);
   }
 
-  /* content */
   .content{
     position:absolute;
     top:98px;
     left:0; right:0;
-    bottom:var(--nav-height);
+    bottom:0;              /* para que las tools asomen bajo la nav */
     overflow:auto;
     padding:16px;
     color:white;
@@ -158,7 +156,6 @@
   .oldprice{ text-decoration:line-through; font-size:12px; opacity:.7; }
   .newprice{ font-size:15px; font-weight:700; color:#ff3b00; }
 
-  /* bottom nav */
   .nav{
     position:absolute;
     bottom:0;
@@ -172,58 +169,64 @@
     border-top-right-radius:20px;
     box-shadow:0 -6px 20px rgba(0,0,0,0.45);
     padding:10px;
+    z-index:10; /* cubre parte del contenido (intencional) */
   }
 
   .nav-item img{
     width:42px; height:42px;
     filter:brightness(0) invert(1);
   }
+
+  .focusable{ outline:none; }
+  .focusable:focus-visible{
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
 </style>
 </head>
 <body>
-<div class="phone">
+<div class="phone" role="application" aria-label="Deals" tabindex="-1">
   <div class="header">
     <div class="logo">K/H</div>
 
     <div class="search-pill">
-      <input type="search" placeholder="Search here ..." />
+      <input id="search" type="search" placeholder="Search here ..." aria-label="Buscar" />
     </div>
 
-    <a href="perfil.html" style="text-decoration:none;">
-  <div class="avatar-small" title="Perfil"></div>
-</a>
-
+    <a id="perfilLink" href="perfil.html" style="text-decoration:none;">
+      <div class="avatar-small" title="Perfil"></div>
+    </a>
   </div>
 
-  <div class="content">
-    <div class="deals-btn">
-      <img class="deals-img" src="discount.png"/>
+  <div class="content" role="main">
+    <div class="deals-btn" aria-hidden="true">
+      <img class="deals-img" src="discount.png" alt=""/>
       <span>Deals</span>
     </div>
 
-    <div class="banner"></div>
-    <div class="title">🤑UNBEATABLE PRICES🤑</div>
-    <div class="title">🔥2-FOR-1 ON CHAINSAWS 🔥<br> BEFORE NOVEMBER 2ND</div>
+    <div class="banner" aria-hidden="true"></div>
+    <div class="title" aria-hidden="true">🤑UNBEATABLE PRICES🤑</div>
+    <div class="title" aria-hidden="true">🔥2-FOR-1 ON CHAINSAWS 🔥<br> BEFORE NOVEMBER 2ND</div>
 
-    <div class="countdown">96:00:00</div>
+    <div class="countdown" aria-hidden="true">96:00:00</div>
 
-    <div class="products">
-      <div class="product">
-        <img src="sword.png" />
+    <div class="products" aria-label="Herramientas">
+      <div class="product tool" id="tool-sword">
+        <img src="sword.png" alt="" />
         <div class="pname">Ruler-Sword</div>
         <div class="oldprice">12.90€</div>
         <div class="newprice">8.99€</div>
       </div>
 
-      <div class="product">
-        <img src="chainsaw.png" />
+      <div class="product tool" id="tool-chainsaw">
+        <img src="chainsaw.png" alt="" />
         <div class="pname">Chainsaw</div>
         <div class="oldprice">12.90€</div>
         <div class="newprice">9.99€</div>
       </div>
 
-      <div class="product">
-        <img src="spatula.png" />
+      <div class="product tool" id="tool-spatula">
+        <img src="spatula.png" alt="" />
         <div class="pname">Spatula</div>
         <div class="oldprice">12.99€</div>
         <div class="newprice">3.99€</div>
@@ -231,18 +234,19 @@
     </div>
   </div>
 
-  <!-- === NAVIGATION WITH RESUMEN LINK === -->
-  <nav class="nav">
-  <div class="nav-item"><img src="home.png" alt="Inicio" /></div>
+  <nav class="nav" aria-label="Navegación">
+    <div id="homeNav" class="nav-item" role="link" aria-label="Inicio" tabindex="0" data-href="home.html">
+      <img src="home.png" alt="Inicio" />
+    </div>
 
-  <a href="deals.html" class="nav-item" style="text-decoration:none;">
-    <img src="binoculars.png" alt="Explorar" />
-  </a>
+    <a id="exploreNav" href="deals.html" class="nav-item" style="text-decoration:none;">
+      <img src="binoculars.png" alt="Explorar" />
+    </a>
 
-  <a href="basket.html" class="nav-item" style="text-decoration:none;">
-    <img src="resumen.png" alt="Resumen" />
-  </a>
-</nav>
+    <a id="basketNav" href="basket.html" class="nav-item" style="text-decoration:none;">
+      <img src="resumen.png" alt="Resumen" />
+    </a>
+  </nav>
 </div>
 
 <script>
@@ -269,11 +273,178 @@ function applyColorblind(mode){
   };
   root.style.filter = filters[mode] || 'none';
 }
-
-// Escuchar eventos cross-pantalla
 window.addEventListener('message', e =>{
   if(e.data?.colorblindMode){ applyColorblind(e.data.colorblindMode); }
 });
+
+/* ==========================
+   GAMEPAD + TECLADO (D-PAD)
+   - 1 paso por pulsación (D-pad edge-trigger)
+   - ignora sticks para evitar drift
+   ========================== */
+(() => {
+  const phone = document.querySelector('.phone');
+  const content = document.querySelector('.content');
+
+  const search = document.getElementById('search');
+  const perfil = document.getElementById('perfilLink');
+
+  const homeNav = document.getElementById('homeNav');
+  const exploreNav = document.getElementById('exploreNav');
+  const basketNav = document.getElementById('basketNav');
+  const nav = [homeNav, exploreNav, basketNav];
+
+  const tools = [
+    document.getElementById('tool-sword'),
+    document.getElementById('tool-chainsaw'),
+    document.getElementById('tool-spatula')
+  ];
+  const toolCenter = tools[1]; // subir desde nav -> foco al centro
+
+  function mark(el, group){
+    el.classList.add('focusable');
+    el.dataset.group = group;
+  }
+  mark(search,'header');
+  mark(perfil,'header');
+  nav.forEach(el => mark(el,'nav'));
+
+  tools.forEach((el, i) => {
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    const name = el.querySelector('.pname')?.textContent?.trim() || `Herramienta ${i+1}`;
+    el.setAttribute('aria-label', name);
+    mark(el,'tool');
+  });
+
+  homeNav.addEventListener('click', () => {
+    const href = homeNav.dataset.href;
+    if (href) window.location.href = href;
+  });
+
+  function clickOnEnterSpace(el){
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.click?.();
+      }
+    });
+  }
+  clickOnEnterSpace(homeNav);
+  tools.forEach(clickOnEnterSpace);
+
+  function focusEl(el){
+    if (!el) return;
+    el.focus({ preventScroll:true });
+    if (content.contains(el)) el.scrollIntoView({ block:'nearest', inline:'nearest' });
+  }
+  function isManaged(el){ return !!(el && el.classList && el.classList.contains('focusable')); }
+
+  function move(dir){
+    const a = document.activeElement;
+
+    // Header
+    if (a === search){
+      if (dir === 'right') return focusEl(perfil);
+      if (dir === 'down')  return focusEl(toolCenter);
+      if (dir === 'left' || dir === 'up') return;
+    }
+    if (a === perfil){
+      if (dir === 'left') return focusEl(search);
+      if (dir === 'down') return focusEl(toolCenter);
+      if (dir === 'right' || dir === 'up') return;
+    }
+
+    // Tools
+    if (a?.dataset?.group === 'tool'){
+      const i = tools.indexOf(a);
+      if (dir === 'left')  return focusEl(tools[Math.max(0, i-1)]);
+      if (dir === 'right') return focusEl(tools[Math.min(tools.length-1, i+1)]);
+      if (dir === 'up')    return focusEl(search);
+      if (dir === 'down')  return focusEl(nav[1] || nav[0]);
+    }
+
+    // Nav
+    if (a?.dataset?.group === 'nav'){
+      const i = nav.indexOf(a);
+      if (dir === 'left')  return focusEl(nav[(i - 1 + nav.length) % nav.length]);
+      if (dir === 'right') return focusEl(nav[(i + 1) % nav.length]);
+      if (dir === 'up')    return focusEl(toolCenter);
+      if (dir === 'down')  return;
+    }
+
+    focusEl(search);
+  }
+
+  function activateFocused(){
+    const el = document.activeElement;
+    if (!el) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+    el.click?.();
+  }
+
+  phone.addEventListener('keydown', (e) => {
+    const k = e.key;
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)){
+      e.preventDefault();
+      move(k.replace('Arrow','').toLowerCase());
+      return;
+    }
+    if (k === 'Enter'){
+      if (isManaged(document.activeElement)){
+        e.preventDefault();
+        activateFocused();
+      }
+    }
+  });
+
+  // ===== GAMEPAD: 1 step per press (edge-trigger), D-pad only =====
+  const prevDpad = { up:false, down:false, left:false, right:false };
+  const prevA = { pressed:false };
+
+  function readDpad(gp){
+    return {
+      left:  !!gp.buttons[14]?.pressed,
+      right: !!gp.buttons[15]?.pressed,
+      up:    !!gp.buttons[12]?.pressed,
+      down:  !!gp.buttons[13]?.pressed
+    };
+  }
+  function justPressed(now, prev){ return now && !prev; }
+
+  function ensureFocus(){
+    if (!isManaged(document.activeElement)) focusEl(search);
+  }
+
+  function pollGamepad(){
+    const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gp = gps && gps[0];
+
+    if (gp){
+      ensureFocus();
+
+      const d = readDpad(gp);
+      if (justPressed(d.left,  prevDpad.left))  move('left');
+      if (justPressed(d.right, prevDpad.right)) move('right');
+      if (justPressed(d.up,    prevDpad.up))    move('up');
+      if (justPressed(d.down,  prevDpad.down))  move('down');
+
+      prevDpad.left  = d.left;
+      prevDpad.right = d.right;
+      prevDpad.up    = d.up;
+      prevDpad.down  = d.down;
+
+      const aNow = !!gp.buttons[0]?.pressed;
+      if (aNow && !prevA.pressed) activateFocused();
+      prevA.pressed = aNow;
+    }
+
+    requestAnimationFrame(pollGamepad);
+  }
+  requestAnimationFrame(pollGamepad);
+
+  focusEl(search);
+})();
 </script>
 </body>
 </html>

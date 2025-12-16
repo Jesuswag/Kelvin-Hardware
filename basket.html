@@ -17,8 +17,6 @@
     --rounded: 16px;
     --nav-height: 78px;
   }
-
-  /* page container centered for desktop */
   body{
     margin:0;
     min-height:100vh;
@@ -31,8 +29,6 @@
     -moz-osx-font-smoothing:grayscale;
     padding:20px 0;
   }
-
-  /* phone-sized viewport (matches your 390x844) */
   .phone{
     width:var(--width);
     height:844px;
@@ -42,8 +38,6 @@
     box-shadow: 0 8px 30px rgba(0,0,0,0.6);
     background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, #064f59 100%);
   }
-
-  /* header */
   .header{
     height:98px;
     background: linear-gradient(180deg,#063A79,#0B3F78);
@@ -61,7 +55,6 @@
     font-size:22px;
     flex: 0 0 auto;
   }
-
   .search-pill{
     flex:1;
     display:flex;
@@ -93,13 +86,11 @@
     border:3px solid rgba(255,255,255,0.06);
   }
 
-  /* main scroll area */
   .content{
     position:absolute;
     top:98px;
     left:0;
     right:0;
-    /* MODIFICACIÓN: dejar espacio extra para el checkout fijo */
     bottom: calc(var(--nav-height) + 140px);
     padding:16px;
     box-sizing:border-box;
@@ -107,7 +98,6 @@
     -webkit-overflow-scrolling:touch;
   }
 
-  /* product card */
   .product {
     display:flex;
     align-items:center;
@@ -138,7 +128,6 @@
   .product .meta .title{ font-weight:500; margin-bottom:6px; }
   .product .meta .price{ opacity:0.95; color:#dfeff7; font-size:13px; }
 
-  /* right icon (cart, rent, wrench) */
   .product .action{
     position:absolute;
     right:14px;
@@ -151,10 +140,10 @@
     justify-content:center;
     background: rgba(255,255,255,0.06);
     border-radius:10px;
+    pointer-events:none;
   }
   .product .action svg{ width:28px; height:28px; fill: #fff; opacity:0.95; }
 
-  /* large check widget (nota: esta regla original queda para usos internos) */
   .checkout-block{
     display:flex;
     gap:14px;
@@ -217,10 +206,8 @@
   }
   .checkout-widget svg{ width:64px; height:64px; opacity:0.95; }
 
-  /* spacer to push content above nav */
   .spacer{ height:40px; }
 
-  /* bottom nav */
   .nav{
     position:absolute;
     left:0;
@@ -250,23 +237,19 @@
   }
   .nav .nav-item img{ width:48px; height:48px; object-fit:contain; filter: brightness(0) invert(1); }
 
-  /* small responsive tweaks */
   @media (max-width:420px){
     .phone{ transform: scale(0.98); }
   }
 
-  /* ==== NUEVAS REGLAS (para checkout fijo encima de la nav) ==== */
-  /* Posicionar el checkout-block fuera del scroll, encima de la nav */
   .checkout-block{
     position: absolute;
     left: 16px;
     right: 16px;
-    bottom: calc(var(--nav-height) + 8px); /* 8px de separación sobre la nav */
+    bottom: calc(var(--nav-height) + 8px);
     display: flex;
     gap: 12px;
     align-items: center;
     z-index: 40;
-    /* estilo ligero para que destaque sobre el fondo */
     background: linear-gradient(180deg, rgba(11,59,115,0.12), rgba(11,59,115,0.06));
     padding: 8px;
     border-radius: 12px;
@@ -277,41 +260,40 @@
   .checkout-block .coupon input { width: 100%; box-sizing: border-box; }
   .checkout-block .checkout-widget { flex: 0 0 120px; }
 
+  .focusable{ outline:none; }
+  .focusable:focus-visible{
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
 </style>
 </head>
 <body>
-  <div class="phone" role="application" aria-label="Carrito">
+  <div class="phone" role="application" aria-label="Carrito" tabindex="-1">
 
-    <!-- header -->
     <div class="header" role="banner">
       <div class="logo">K/H</div>
 
       <div class="search-pill" aria-hidden="false">
-        <input type="search" placeholder="Search here ..." aria-label="Buscar" />
+        <input id="search" type="search" placeholder="Search here ..." aria-label="Buscar" />
         <svg viewBox="0 0 24 24" aria-hidden style="flex:0 0 auto;">
           <circle cx="11" cy="11" r="7" stroke="#0B2B57" stroke-width="1.6" fill="none" />
           <path d="M20 20 L15.5 15.5" stroke="#0B2B57" stroke-width="2" stroke-linecap="round" />
         </svg>
       </div>
 
-      <a href="perfil.html" style="text-decoration:none;">
-  <div class="avatar" title="Perfil"></div>
-</a>
-
+      <a id="perfilLink" href="perfil.html" style="text-decoration:none;">
+        <div class="avatar" title="Perfil"></div>
+      </a>
     </div>
 
-    <!-- scrollable content -->
     <div class="content" role="main">
-
-      <!-- product list -->
-      <div class="product" id="p-nuts">
+      <div class="product" id="p-nuts" data-action="toggle" data-action-label="Añadir/quitar">
         <div class="img" style="background-image: url('nutsandbolts.png'); background-size:contain;background-position:center;"></div>
         <div class="meta">
           <div class="title">Nuts and bolts x25</div>
           <div class="price">3.000 V-Bucks</div>
         </div>
         <div class="action" title="Añadir/quitar">
-          <!-- basket icon (sin ruedas) -->
           <svg viewBox="0 0 24 24" aria-hidden>
             <path d="M3 6h18l-3 10H6L3 6z" fill="#fff"/>
             <path d="M8 6a4 4 0 018 0" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -319,31 +301,28 @@
         </div>
       </div>
 
-      <div class="product" id="p-wrench">
+      <div class="product" id="p-wrench" data-action="rent" data-action-label="Rent">
         <div class="img" style="background-image: url('wrench.png'); background-size:contain;background-position:center;"></div>
         <div class="meta">
           <div class="title">Wrench x2</div>
           <div class="price">8.000 V-Bucks</div>
         </div>
         <div class="action" title="Rent">
-          <!-- rent sign icon (rectángulo con palo hacia abajo) -->
           <svg viewBox="0 0 24 24" aria-hidden>
             <rect x="5" y="3" width="14" height="10" rx="1.8" fill="#fff"></rect>
             <path d="M12 13v6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
             <path d="M9 6h8" stroke="#0B3F78" stroke-width="1.6" stroke-linecap="round" />
-        </svg>
-
+          </svg>
         </div>
       </div>
 
-      <div class="product" id="p-hammer">
+      <div class="product" id="p-hammer" data-action="repair" data-action-label="Tool">
         <div class="img" style="background-image: url('hammer.png'); background-size:contain;background-position:center;"></div>
         <div class="meta">
           <div class="title">Hammer x1</div>
           <div class="price">10.000 V-Bucks</div>
         </div>
         <div class="action" title="Tool">
-          <!-- wrench icon (mejorada) -->
           <svg viewBox="0 0 24 24" aria-hidden>
             <path d="M17 2l-2.5 2.5a2.5 2.5 0 0 0 3.5 3.5L20 5a7 7 0 0 1-8 10l-4 4a1.5 1.5 0 0 1-2 0l-1-1a1.5 1.5 0 0 1 0-2l4-4A7 7 0 0 1 17 2z"
             fill="none"
@@ -351,52 +330,307 @@
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round" />
-        </svg>
-
+          </svg>
         </div>
       </div>
 
       <div class="spacer"></div>
     </div>
 
-    <!-- -------------- checkout moved fuera del scroll and pasted here -------------- -->
     <div class="checkout-block">
-  <div class="coupon">
-    <input type="text" value="FREEHAMMER25" aria-label="Cupón" />
-    <div class="small-btn" role="button" aria-pressed="false">Add discount code</div>
-  </div>
-  <!-- OJO! no es Order-Details  -->
-  <a href="rental.html" style="text-decoration:none;">
-    <div class="checkout-widget" role="button" aria-label="Checkout">
-      <div class="vb">21.000 V-Bucks</div>
+      <div class="coupon">
+        <input id="couponInput" type="text" value="FREEHAMMER25" aria-label="Cupón" />
+        <div id="discountBtn" class="small-btn" role="button" aria-pressed="false" tabindex="0">Add discount code</div>
+      </div>
 
-      <svg viewBox="0 0 64 64" aria-hidden>
-        <circle cx="32" cy="32" r="28" stroke="#fff" stroke-width="4" fill="none"/>
-        <path d="M20 34l8 8 16-20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-
+      <a id="checkoutLink" href="rental.html" style="text-decoration:none;">
+        <div class="checkout-widget" role="button" aria-label="Checkout">
+          <div class="vb">21.000 V-Bucks</div>
+          <svg viewBox="0 0 64 64" aria-hidden>
+            <circle cx="32" cy="32" r="28" stroke="#fff" stroke-width="4" fill="none"/>
+            <path d="M20 34l8 8 16-20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>
     </div>
-  </a>
-</div>
 
+    <nav class="nav" role="navigation" aria-label="Navegación">
+      <div id="homeNav" class="nav-item" role="link" aria-label="Inicio" tabindex="0" data-href="home.html">
+        <img src="home.png" alt="Inicio"/>
+      </div>
 
+      <a id="exploreNav" href="deals.html" class="nav-item" style="text-decoration:none;">
+        <img src="binoculars.png" alt="Explorar"/>
+      </a>
 
-    <!-- bottom nav -->
-  <nav class="nav" role="navigation" aria-label="Navegación">
-  <div class="nav-item">
-    <img src="home.png" alt="Inicio"/>
+      <a id="basketNav" href="basket.html" class="nav-item" style="text-decoration:none;">
+        <img src="resumen.png" alt="Resumen"/>
+      </a>
+    </nav>
   </div>
 
-  <a href="deals.html" class="nav-item" style="text-decoration:none;">
-    <img src="binoculars.png" alt="Explorar"/>
-  </a>
+<script>
+(() => {
+  const phone = document.querySelector('.phone');
+  const content = document.querySelector('.content');
 
-  <a href="basket.html" class="nav-item" style="text-decoration:none;">
-    <img src="resumen.png" alt="Resumen"/>
-  </a>
-</nav>
+  const search = document.getElementById('search');
+  const perfilLink = document.getElementById('perfilLink');
 
+  const couponInput = document.getElementById('couponInput');
+  const discountBtn = document.getElementById('discountBtn');
+  const checkoutLink = document.getElementById('checkoutLink');
 
-  </div>
+  const homeNav = document.getElementById('homeNav');
+  const exploreNav = document.getElementById('exploreNav');
+  const basketNav = document.getElementById('basketNav');
+  const navItems = [homeNav, exploreNav, basketNav];
+
+  const products = [...document.querySelectorAll('.product')];
+  const firstProduct = products[0] || null;
+  const lastProduct  = products[products.length - 1] || null;
+
+  // ---- mark focusable
+  function mark(el, group){
+    el.classList.add('focusable');
+    el.dataset.group = group;
+  }
+  mark(search,'header');
+  mark(perfilLink,'header');
+  mark(couponInput,'checkout');
+  mark(discountBtn,'checkout');
+  mark(checkoutLink,'checkout');
+  navItems.forEach(el => mark(el,'nav'));
+
+  // Products: focusable is the full rectangle
+  products.forEach((p, idx) => {
+    p.setAttribute('role','button');
+    p.setAttribute('tabindex','0');
+    const title = p.querySelector('.title')?.textContent?.trim() || `Producto ${idx+1}`;
+    const actionLabel = p.dataset.actionLabel || 'Acción';
+    p.setAttribute('aria-label', `${title}. ${actionLabel}`);
+    mark(p,'content');
+  });
+
+  // ---- click behaviors
+  homeNav.addEventListener('click', () => {
+    const href = homeNav.dataset.href;
+    if (href) window.location.href = href;
+  });
+
+  discountBtn.addEventListener('click', () => {
+    const pressed = discountBtn.getAttribute('aria-pressed') === 'true';
+    discountBtn.setAttribute('aria-pressed', String(!pressed));
+  });
+
+  function activateProduct(p){
+    console.log('Product action:', p.id, p.dataset.action);
+  }
+  products.forEach(p => p.addEventListener('click', () => activateProduct(p)));
+
+  function clickOnEnterSpace(el){
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.click?.();
+      }
+    });
+  }
+  clickOnEnterSpace(homeNav);
+  clickOnEnterSpace(discountBtn);
+  products.forEach(clickOnEnterSpace);
+
+  // ---- focus helpers
+  function focusEl(el){
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    if (content.contains(el)) el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  function isManaged(el){
+    return !!(el && el.classList && el.classList.contains('focusable'));
+  }
+
+  // ---- Spatial fallback (rarely used; explicit graph covers most)
+  function getCenter(rect){ return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; }
+  function getFocusableVisible(){
+    const all = [...document.querySelectorAll('.focusable')];
+    return all.filter(el => {
+      const r = el.getBoundingClientRect();
+      const s = getComputedStyle(el);
+      return s.visibility !== 'hidden' && s.display !== 'none' && r.width > 0 && r.height > 0;
+    });
+  }
+  function moveSpatial(dir){
+    const list = getFocusableVisible();
+    const active = isManaged(document.activeElement) ? document.activeElement : (list[0] || search);
+    if (!active) return;
+
+    const c = getCenter(active.getBoundingClientRect());
+    let best = null;
+    let bestScore = Infinity;
+
+    for (const el of list){
+      if (el === active) continue;
+      const p = getCenter(el.getBoundingClientRect());
+      const dx = p.x - c.x;
+      const dy = p.y - c.y;
+      const eps = 2;
+
+      if (dir === 'left'  && dx >= -eps) continue;
+      if (dir === 'right' && dx <=  eps) continue;
+      if (dir === 'up'    && dy >= -eps) continue;
+      if (dir === 'down'  && dy <=  eps) continue;
+
+      const primary = (dir === 'left' || dir === 'right') ? Math.abs(dx) : Math.abs(dy);
+      const secondary = (dir === 'left' || dir === 'right') ? Math.abs(dy) : Math.abs(dx);
+      const score = primary * 1000 + secondary;
+
+      if (score < bestScore){
+        bestScore = score;
+        best = el;
+      }
+    }
+
+    if (best) focusEl(best);
+  }
+
+  // ---- Explicit focus graph rules
+  function move(dir){
+    const active = document.activeElement;
+
+    // HEADER
+    if (active === search){
+      if (dir === 'right') return focusEl(perfilLink);
+      if (dir === 'down') return focusEl(firstProduct);
+    }
+    if (active === perfilLink){
+      if (dir === 'down') return focusEl(firstProduct);
+      if (dir === 'left') return focusEl(search);
+    }
+
+    // NAV
+    if (active?.dataset?.group === 'nav'){
+      const i = navItems.indexOf(active);
+      if (dir === 'left')  return focusEl(navItems[(i - 1 + navItems.length) % navItems.length]);
+      if (dir === 'right') return focusEl(navItems[(i + 1) % navItems.length]);
+      if (dir === 'up')    return focusEl(checkoutLink);
+      if (dir === 'down')  return;
+    }
+
+    // CHECKOUT
+    if (active === checkoutLink){
+      if (dir === 'up')   return focusEl(lastProduct);
+      if (dir === 'left') return focusEl(couponInput);
+      if (dir === 'down') return focusEl(navItems[1] || navItems[0]);
+    }
+
+    // COUPON INPUT
+    if (active === couponInput){
+      if (dir === 'up')    return focusEl(lastProduct);
+      if (dir === 'down')  return focusEl(discountBtn);
+      if (dir === 'right') return focusEl(checkoutLink);
+      if (dir === 'left')  return;
+    }
+
+    // DISCOUNT BUTTON
+    if (active === discountBtn){
+      if (dir === 'left')  return;
+      if (dir === 'right') return focusEl(checkoutLink);
+      if (dir === 'up')    return focusEl(couponInput);
+      if (dir === 'down')  return focusEl(navItems[1] || navItems[0]);
+    }
+
+    // CONTENT bottom edge -> coupon input
+    if (active?.dataset?.group === 'content' && dir === 'down'){
+      const aRect = active.getBoundingClientRect();
+      const cRect = content.getBoundingClientRect();
+      const nearBottom = aRect.bottom > cRect.bottom - 12;
+      if (nearBottom) return focusEl(couponInput);
+    }
+
+    // fallback
+    moveSpatial(dir);
+  }
+
+  function activateFocused(){
+    const el = document.activeElement;
+    if (!el) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+
+    if (el?.dataset?.group === 'content' && el.classList.contains('product')){
+      return activateProduct(el);
+    }
+    el.click?.();
+  }
+
+  // Keyboard
+  phone.addEventListener('keydown', (e) => {
+    const k = e.key;
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)){
+      e.preventDefault();
+      move(k.replace('Arrow','').toLowerCase());
+      return;
+    }
+    if (k === 'Enter'){
+      if (isManaged(document.activeElement)){
+        e.preventDefault();
+        activateFocused();
+      }
+    }
+  });
+
+  // =========================
+  // GAMEPAD: 1 step per press
+  // (sin autorepeat; ignora sticks)
+  // =========================
+  const prevDpad = { up:false, down:false, left:false, right:false };
+  const prevA = { pressed:false };
+
+  function readDpad(gp){
+    return {
+      left:  !!gp.buttons[14]?.pressed,
+      right: !!gp.buttons[15]?.pressed,
+      up:    !!gp.buttons[12]?.pressed,
+      down:  !!gp.buttons[13]?.pressed
+    };
+  }
+  function justPressed(now, prev){ return now && !prev; }
+
+  function ensureSomeFocus(){
+    if (!isManaged(document.activeElement)) focusEl(search);
+  }
+
+  function pollGamepad(){
+    const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gp = gps && gps[0];
+
+    if (gp){
+      ensureSomeFocus();
+
+      const d = readDpad(gp);
+
+      if (justPressed(d.left,  prevDpad.left))  move('left');
+      if (justPressed(d.right, prevDpad.right)) move('right');
+      if (justPressed(d.up,    prevDpad.up))    move('up');
+      if (justPressed(d.down,  prevDpad.down))  move('down');
+
+      prevDpad.left  = d.left;
+      prevDpad.right = d.right;
+      prevDpad.up    = d.up;
+      prevDpad.down  = d.down;
+
+      const aNow = !!gp.buttons[0]?.pressed;
+      if (aNow && !prevA.pressed) activateFocused();
+      prevA.pressed = aNow;
+    }
+
+    requestAnimationFrame(pollGamepad);
+  }
+  requestAnimationFrame(pollGamepad);
+
+  // Initial focus
+  focusEl(search);
+})();
+</script>
 </body>
 </html>
