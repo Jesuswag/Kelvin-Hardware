@@ -38,7 +38,6 @@
     filter: url(#cb-normal);
   }
 
-  /* HEADER */
   .header{
     height:98px;
     background:linear-gradient(180deg,#063A79,#0B3F78);
@@ -66,9 +65,7 @@
     border-radius:999px;
     padding:0 12px;
   }
-  .search-pill input{
-    border:0; outline:none; flex:1;
-  }
+  .search-pill input{ border:0; outline:none; flex:1; }
 
   .avatar-small{
     width:44px; height:44px; border-radius:50%;
@@ -76,7 +73,6 @@
     object-fit:cover;
   }
 
-  /* CONTENT */
   .content{
     position:absolute;
     top:98px; left:0; right:0;
@@ -165,7 +161,6 @@
     border-radius:12px;
   }
 
-  /* NAV */
   .nav{
     position:absolute;
     bottom:0; left:0; right:0;
@@ -184,11 +179,15 @@
     filter:brightness(0) invert(1);
   }
 
+  .focusable{ outline:none; }
+  .focusable:focus-visible{
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
 </style>
 </head>
 <body>
 
-<!-- === SVG FILTERS === -->
 <svg width="0" height="0">
   <defs>
     <filter id="cb-normal"><feColorMatrix type="matrix"
@@ -221,30 +220,26 @@
   </defs>
 </svg>
 
-<div class="phone" id="app-screen">
+<div class="phone" id="app-screen" role="application" aria-label="Perfil" tabindex="-1">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="logo">K/H</div>
-    <div class="search-pill"><input type="search" placeholder="Search here ..." /></div>
-    <a href="perfil.html" style="text-decoration:none;">
+    <div class="search-pill"><input id="search" type="search" placeholder="Search here ..." aria-label="Buscar" /></div>
+
+    <a id="perfilLink" href="perfil.html" style="text-decoration:none;">
       <img src="milei.png" class="avatar-small" title="Perfil" />
     </a>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
-
     <img src="milei.png" class="profile-pic" />
-
     <div class="hello">Hi, Javier</div>
-
     <div class="section-title">Accessibility settings</div>
 
     <div class="row">
       <div>Colorblind mode</div>
       <div class="select-pill">
-        <select id="mode">
+        <select id="mode" aria-label="Modo daltonismo">
           <option value="normal">Normal</option>
           <option value="prot">Protanope</option>
           <option value="deut">Deuteranope</option>
@@ -257,7 +252,7 @@
     <div class="row">
       <div>Colorblind strength</div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <input type="range" min="0" max="100" value="100" id="strength" class="slider" />
+        <input type="range" min="0" max="100" value="100" id="strength" class="slider" aria-label="Intensidad daltonismo" />
         <div class="slider-value" id="strengthLabel">100%</div>
       </div>
     </div>
@@ -265,19 +260,19 @@
     <div class="ishihara-box">
       <div class="ishihara-img"></div>
     </div>
-
   </div>
 
-  <!-- NAV -->
-  <div class="nav">
-    <div class="nav-item"><img src="home.png"></div>
+  <div class="nav" aria-label="Navegación inferior">
+    <div id="homeNav" class="nav-item" role="link" aria-label="Inicio" tabindex="0" data-href="home.html">
+      <img src="home.png" alt="Inicio">
+    </div>
 
-    <a href="deals.html" class="nav-item" style="text-decoration:none;">
+    <a id="exploreNav" href="deals.html" class="nav-item" style="text-decoration:none;">
       <img src="binoculars.png" alt="Explorar">
     </a>
 
-    <a href="basket.html" class="nav-item" style="text-decoration:none;">
-      <img src="resumen.png">
+    <a id="basketNav" href="basket.html" class="nav-item" style="text-decoration:none;">
+      <img src="resumen.png" alt="Resumen">
     </a>
   </div>
 
@@ -290,19 +285,17 @@ const mode = document.getElementById("mode");
 const strength = document.getElementById("strength");
 const strengthLabel = document.getElementById("strengthLabel");
 
-// Código de reemplazo para la función updateFilter:
 function updateFilter(){
   const m = mode.value;
   const s = strength.value / 100;
   strengthLabel.textContent = Math.round(s * 100) + "%";
 
-  if(m === "normal" || s === 0){ // s === 0 significa 0% de daltonismo (normal)
+  if(m === "normal" || s === 0){
     screen.style.filter = `url(#cb-normal)`;
     return;
   }
 
-  // Mapear el modo a la matriz de color (ejemplo para Protanope):
-  let baseMatrix = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]; // Matriz de color normal
+  let baseMatrix = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0];
 
   let colorblindMatrix;
   switch(m){
@@ -314,7 +307,7 @@ function updateFilter(){
         0, 0, 0, 1, 0
       ];
       break;
-      case "deut":
+    case "deut":
       colorblindMatrix = [
         0.625, 0.375, 0, 0, 0,
         0.7, 0.3, 0, 0, 0,
@@ -322,7 +315,7 @@ function updateFilter(){
         0, 0, 0, 1, 0
       ];
       break;
-      case "trit":
+    case "trit":
       colorblindMatrix = [
         0.95, 0.05, 0, 0, 0,
         0, 0.43, 0.57, 0, 0,
@@ -330,7 +323,7 @@ function updateFilter(){
         0, 0, 0, 1, 0
       ];
       break;
-      case "achro":
+    case "achro":
       colorblindMatrix = [
         0.213, 0.715, 0.072, 0, 0,
         0.213, 0.715, 0.072, 0, 0,
@@ -338,34 +331,28 @@ function updateFilter(){
         0, 0, 0, 1, 0
       ];
       break;
-    // Agrega casos para 'deut', 'trit', 'achro'
-    // ...
   }
 
-  // Interpolación de la matriz: NewMatrix = Original * (1-s) + Colorblind * s
   let interpolatedMatrix = [];
   for(let i = 0; i < 20; i++){
     interpolatedMatrix[i] = baseMatrix[i] * (1 - s) + colorblindMatrix[i] * s;
   }
 
-  // Convierte el array en una cadena de valores
   const matrixString = interpolatedMatrix.join(' ');
-
-  // Crea un filtro SVG dinámico con la matriz interpolada
   const dynamicFilterId = `cb-interp-${m}`;
   let svgDefs = document.querySelector('svg defs');
   let existingFilter = document.getElementById(dynamicFilterId);
 
   if(existingFilter) {
-      existingFilter.querySelector('feColorMatrix').setAttribute('values', matrixString);
+    existingFilter.querySelector('feColorMatrix').setAttribute('values', matrixString);
   } else {
-      const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-      filter.setAttribute('id', dynamicFilterId);
-      const feColorMatrix = document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix");
-      feColorMatrix.setAttribute('type', 'matrix');
-      feColorMatrix.setAttribute('values', matrixString);
-      filter.appendChild(feColorMatrix);
-      svgDefs.appendChild(filter);
+    const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    filter.setAttribute('id', dynamicFilterId);
+    const feColorMatrix = document.createElementNS("http://www.w3.org/2000/svg", "feColorMatrix");
+    feColorMatrix.setAttribute('type', 'matrix');
+    feColorMatrix.setAttribute('values', matrixString);
+    filter.appendChild(feColorMatrix);
+    svgDefs.appendChild(filter);
   }
 
   screen.style.filter = `url(#${dynamicFilterId})`;
@@ -373,8 +360,212 @@ function updateFilter(){
 
 mode.addEventListener("change", updateFilter);
 strength.addEventListener("input", updateFilter);
-
 updateFilter();
+
+/* ==========================
+   GAMEPAD + TECLADO (D-PAD)
+   - SELECT circular (wrap)
+   - SLIDER: 5 por defecto, 1 si A está mantenido
+   ========================== */
+(() => {
+  const phone = document.getElementById('app-screen');
+  const content = phone.querySelector('.content');
+
+  const searchEl = document.getElementById('search');
+  const perfilEl = document.getElementById('perfilLink');
+
+  const modeSel = document.getElementById('mode');
+  const strengthRange = document.getElementById('strength');
+
+  const homeNav = document.getElementById('homeNav');
+  const exploreNav = document.getElementById('exploreNav');
+  const basketNav = document.getElementById('basketNav');
+  const nav = [homeNav, exploreNav, basketNav];
+
+  // Estado A mantenido (mando y teclado para test)
+  let aHeld = false;
+  window.addEventListener('keydown', (e) => { if (e.code === 'Space') aHeld = true; });
+  window.addEventListener('keyup',   (e) => { if (e.code === 'Space') aHeld = false; });
+
+  function mark(el, group){
+    el.classList.add('focusable');
+    el.dataset.group = group;
+  }
+  mark(searchEl,'header');
+  mark(perfilEl,'header');
+  mark(modeSel,'settings');
+  mark(strengthRange,'settings');
+  nav.forEach(el => mark(el,'nav'));
+
+  homeNav.addEventListener('click', () => {
+    const href = homeNav.dataset.href;
+    if (href) window.location.href = href;
+  });
+  homeNav.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); homeNav.click(); }
+  });
+
+  function focusEl(el){
+    if (!el) return;
+    el.focus({ preventScroll:true });
+    if (content.contains(el)) el.scrollIntoView({ block:'nearest', inline:'nearest' });
+  }
+  function isManaged(el){ return !!(el && el.classList && el.classList.contains('focusable')); }
+
+  // SELECT circular
+  function stepSelect(delta){
+    const len = modeSel.options.length;
+    if (!len) return;
+    let i = modeSel.selectedIndex;
+    // wrap
+    i = (i + delta + len) % len;
+    if (i !== modeSel.selectedIndex){
+      modeSel.selectedIndex = i;
+      modeSel.dispatchEvent(new Event('change', { bubbles:true }));
+    }
+  }
+
+  // SLIDER: 5 por defecto; 1 si A está mantenido
+  function stepSlider(delta){
+    const stepAttr = strengthRange.getAttribute('step');
+    const step1 = (stepAttr && stepAttr !== 'any') ? Number(stepAttr) : 1;
+
+    const base = 5;                 // 👈 por defecto
+    const mult = aHeld ? 1 : base;  // 👈 con A => 1 en 1
+    const step = step1 * mult;
+
+    const min = Number(strengthRange.min || 0);
+    const max = Number(strengthRange.max || 100);
+    const cur = Number(strengthRange.value || 0);
+    const next = Math.min(max, Math.max(min, cur + delta * step));
+    strengthRange.value = String(next);
+    strengthRange.dispatchEvent(new Event('input', { bubbles:true }));
+  }
+
+  function move(dir){
+    const a = document.activeElement;
+
+    // SELECT: left/right cambia opción (circular); up/down navega
+    if (a === modeSel){
+      if (dir === 'left')  return stepSelect(-1);
+      if (dir === 'right') return stepSelect(+1);
+      if (dir === 'down')  return focusEl(strengthRange);
+      if (dir === 'up')    return focusEl(searchEl);
+      return;
+    }
+
+    // SLIDER: left/right ajusta; up/down navega
+    if (a === strengthRange){
+      if (dir === 'left')  return stepSlider(-1);
+      if (dir === 'right') return stepSlider(+1);
+      if (dir === 'up')    return focusEl(modeSel);
+      if (dir === 'down')  return focusEl(nav[1] || nav[0]);
+      return;
+    }
+
+    // HEADER
+    if (a === searchEl){
+      if (dir === 'right') return focusEl(perfilEl);
+      if (dir === 'down')  return focusEl(modeSel);
+      return;
+    }
+    if (a === perfilEl){
+      if (dir === 'left')  return focusEl(searchEl);
+      if (dir === 'down')  return focusEl(modeSel);
+      return;
+    }
+
+    // NAV
+    if (a?.dataset?.group === 'nav'){
+      const i = nav.indexOf(a);
+      if (dir === 'left')  return focusEl(nav[(i - 1 + nav.length) % nav.length]);
+      if (dir === 'right') return focusEl(nav[(i + 1) % nav.length]);
+      if (dir === 'up')    return focusEl(strengthRange);
+      return;
+    }
+
+    focusEl(searchEl);
+  }
+
+  function activateFocused(){
+    const el = document.activeElement;
+    if (!el) return;
+
+    // En select/slider no activamos con A (se controla con left/right)
+    if (el === modeSel) return;
+    if (el === strengthRange) return;
+    if (el === searchEl) return;
+
+    el.click?.();
+  }
+
+  // Keyboard (flechas)
+  phone.addEventListener('keydown', (e) => {
+    const k = e.key;
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)){
+      e.preventDefault();
+      move(k.replace('Arrow','').toLowerCase());
+      return;
+    }
+    if (k === 'Enter'){
+      if (isManaged(document.activeElement)){
+        e.preventDefault();
+        activateFocused();
+      }
+    }
+  });
+
+  // GAMEPAD: edge-trigger, D-pad only
+  const prevDpad = { up:false, down:false, left:false, right:false };
+  const prevA = { pressed:false };
+
+  function readDpad(gp){
+    return {
+      left:  !!gp.buttons[14]?.pressed,
+      right: !!gp.buttons[15]?.pressed,
+      up:    !!gp.buttons[12]?.pressed,
+      down:  !!gp.buttons[13]?.pressed
+    };
+  }
+  function justPressed(now, prev){ return now && !prev; }
+
+  function ensureFocus(){
+    if (!isManaged(document.activeElement)) focusEl(searchEl);
+  }
+
+  function pollGamepad(){
+    const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gp = gps && gps[0];
+
+    if (gp){
+      ensureFocus();
+
+      // actualizar “A mantenido”
+      aHeld = !!gp.buttons[0]?.pressed;
+
+      const d = readDpad(gp);
+      if (justPressed(d.left,  prevDpad.left))  move('left');
+      if (justPressed(d.right, prevDpad.right)) move('right');
+      if (justPressed(d.up,    prevDpad.up))    move('up');
+      if (justPressed(d.down,  prevDpad.down))  move('down');
+
+      prevDpad.left  = d.left;
+      prevDpad.right = d.right;
+      prevDpad.up    = d.up;
+      prevDpad.down  = d.down;
+
+      // “tap” A activa (no afecta al slider: ahí lo usamos como modificador)
+      const aNow = !!gp.buttons[0]?.pressed;
+      if (aNow && !prevA.pressed) activateFocused();
+      prevA.pressed = aNow;
+    }
+
+    requestAnimationFrame(pollGamepad);
+  }
+  requestAnimationFrame(pollGamepad);
+
+  focusEl(searchEl);
+})();
 </script>
 
 </body>

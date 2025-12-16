@@ -64,56 +64,64 @@
     border-top-left-radius:20px;border-top-right-radius:20px;
     box-shadow:0 -6px 20px rgba(0,0,0,0.45);
   }
-  .nav-item img{width:42px;height:42px;filter:brightness(0) invert(1);} 
+  .nav-item img{width:42px;height:42px;filter:brightness(0) invert(1);}
+
+  /* Focus ring only */
+  .focusable{ outline:none; }
+  .focusable:focus-visible{
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
 </style>
 </head>
 <body>
-<div class="phone">
+<div class="phone" id="rentalApp" role="application" aria-label="Rental" tabindex="-1">
   <div class="header">
     <div class="logo">K/H</div>
-    <div class="search-pill"><input type="search" placeholder="Search here ..."></div>
-    <a href="perfil.html" style="text-decoration:none;">
-  <div class="avatar" title="Perfil"></div>
-</a>
+    <div class="search-pill">
+      <input id="search" type="search" placeholder="Search here ..." aria-label="Buscar">
+    </div>
 
+    <a id="perfilLink" href="perfil.html" style="text-decoration:none;">
+      <div class="avatar" title="Perfil"></div>
+    </a>
   </div>
 
   <div class="content">
     <h2>User details</h2>
-    <div class="field">Javier Milei, JMilei@yahoo.com <span class="modify">Modify</span></div>
+    <div class="field">Javier Milei, JMilei@yahoo.com <span class="modify" id="modUser" role="button" tabindex="0">Modify</span></div>
 
     <h2>Address</h2>
-    <div class="field">Pink House, Floor 9B<br>Albacete, Spain<span class="modify">Modify</span></div>
+    <div class="field">Pink House, Floor 9B<br>Albacete, Spain<span class="modify" id="modAddr" role="button" tabindex="0">Modify</span></div>
 
     <h2>Rental Dates</h2>
-    <div class="calendar">
-      <img src="calendar.png"
-     alt="Calendar"
-     style="width:100%; border-radius:14px;" />
+    <div class="calendar" aria-hidden="true">
+      <img src="calendar.png" alt="Calendar" style="width:100%; border-radius:14px;" />
     </div>
 
     <h2>Paying methods</h2>
-    <div class="pay-methods">
-      <div class="pm" id="pm1"><img src="paypal.png"></div>
-      <div class="pm" id="pm2"><img src="card.jpg"></div>
-      <div class="pm" id="pm3"><img src="cash.png"></div>
+    <div class="pay-methods" aria-label="Métodos de pago">
+      <div class="pm" id="pm1"><img src="paypal.png" alt="PayPal"></div>
+      <div class="pm" id="pm2"><img src="card.jpg" alt="Tarjeta"></div>
+      <div class="pm" id="pm3"><img src="cash.png" alt="Efectivo"></div>
     </div>
 
-    <div class="confirm">Confirm</div>
+    <div class="confirm" id="confirmBtn" role="button" tabindex="0" aria-label="Confirmar">Confirm</div>
   </div>
 
-  <!-- === NAVIGATION UPDATED: resumen → basket.html === -->
-  <nav class="nav">
-  <div class="nav-item"><img src="home.png"></div>
+  <nav class="nav" aria-label="Navegación">
+    <div id="homeNav" class="nav-item" role="link" aria-label="Inicio" tabindex="0" data-href="home.html">
+      <img src="home.png" alt="Inicio">
+    </div>
 
-  <a href="deals.html" class="nav-item" style="text-decoration:none;">
-    <img src="binoculars.png" alt="Explorar">
-  </a>
+    <a id="exploreNav" href="deals.html" class="nav-item" style="text-decoration:none;">
+      <img src="binoculars.png" alt="Explorar">
+    </a>
 
-  <a href="basket.html" class="nav-item" style="text-decoration:none;">
-    <img src="resumen.png" alt="Resumen">
-  </a>
-</nav>
+    <a id="basketNav" href="basket.html" class="nav-item" style="text-decoration:none;">
+      <img src="resumen.png" alt="Resumen">
+    </a>
+  </nav>
 </div>
 
 <script>
@@ -123,6 +131,206 @@ methods.forEach(m=>m.addEventListener('click',()=>{
   methods.forEach(x=>x.classList.remove('selected'));
   m.classList.add('selected');
 }));
+
+/* ==========================
+   GAMEPAD + TECLADO (D-PAD)
+   - 1 paso por pulsación (edge-trigger)
+   - D-pad only (sin sticks)
+   - Right desde search -> perfil
+   ========================== */
+(() => {
+  const phone = document.getElementById('rentalApp');
+  const content = phone.querySelector('.content');
+
+  const search = document.getElementById('search');
+  const perfil = document.getElementById('perfilLink');
+
+  const modUser = document.getElementById('modUser');
+  const modAddr = document.getElementById('modAddr');
+
+  const pm1 = document.getElementById('pm1');
+  const pm2 = document.getElementById('pm2');
+  const pm3 = document.getElementById('pm3');
+  const pms = [pm1, pm2, pm3];
+
+  const confirmBtn = document.getElementById('confirmBtn');
+
+  const homeNav = document.getElementById('homeNav');
+  const exploreNav = document.getElementById('exploreNav');
+  const basketNav = document.getElementById('basketNav');
+  const nav = [homeNav, exploreNav, basketNav];
+
+  function mark(el, group){
+    el.classList.add('focusable');
+    el.dataset.group = group;
+  }
+  mark(search,'header');
+  mark(perfil,'header');
+  mark(modUser,'form');
+  mark(modAddr,'form');
+  pms.forEach(el => { el.setAttribute('role','button'); el.setAttribute('tabindex','0'); mark(el,'pay'); });
+  mark(confirmBtn,'confirm');
+  nav.forEach(el => mark(el,'nav'));
+
+  homeNav.addEventListener('click', () => {
+    const href = homeNav.dataset.href;
+    if (href) window.location.href = href;
+  });
+
+  function clickOnEnterSpace(el){
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click?.(); }
+    });
+  }
+  clickOnEnterSpace(homeNav);
+  clickOnEnterSpace(modUser);
+  clickOnEnterSpace(modAddr);
+  clickOnEnterSpace(confirmBtn);
+  pms.forEach(clickOnEnterSpace);
+
+  // Permite seleccionar método con click/Enter/A
+  pms.forEach(pm => pm.addEventListener('click', () => {
+    pms.forEach(x=>x.classList.remove('selected'));
+    pm.classList.add('selected');
+  }));
+
+  function focusEl(el){
+    if (!el) return;
+    el.focus({ preventScroll:true });
+    if (content.contains(el)) el.scrollIntoView({ block:'nearest', inline:'nearest' });
+  }
+  function isManaged(el){ return !!(el && el.classList && el.classList.contains('focusable')); }
+
+  function move(dir){
+    const a = document.activeElement;
+
+    // HEADER
+    if (a === search){
+      if (dir === 'right') return focusEl(perfil);
+      if (dir === 'down')  return focusEl(modUser);
+      if (dir === 'left' || dir === 'up') return;
+    }
+    if (a === perfil){
+      if (dir === 'left')  return focusEl(search);
+      if (dir === 'down')  return focusEl(modUser);
+      if (dir === 'right' || dir === 'up') return;
+    }
+
+    // FORM
+    if (a === modUser){
+      if (dir === 'down') return focusEl(modAddr);
+      if (dir === 'up')   return focusEl(search);
+      if (dir === 'right') return focusEl(perfil);
+      if (dir === 'left') return;
+    }
+    if (a === modAddr){
+      if (dir === 'up')   return focusEl(modUser);
+      if (dir === 'down') return focusEl(pm2); // centro por defecto
+      if (dir === 'right') return focusEl(perfil);
+      if (dir === 'left') return;
+    }
+
+    // PAY
+    if (a?.dataset?.group === 'pay'){
+      const i = pms.indexOf(a);
+      if (dir === 'left')  return focusEl(pms[Math.max(0, i-1)]);
+      if (dir === 'right') return focusEl(pms[Math.min(pms.length-1, i+1)]);
+      if (dir === 'up')    return focusEl(modAddr);
+      if (dir === 'down')  return focusEl(confirmBtn);
+    }
+
+    // CONFIRM
+    if (a === confirmBtn){
+      if (dir === 'up')   return focusEl(pm2);
+      if (dir === 'down') return focusEl(nav[1] || nav[0]);
+      if (dir === 'right') return focusEl(perfil);
+      if (dir === 'left') return;
+    }
+
+    // NAV
+    if (a?.dataset?.group === 'nav'){
+      const i = nav.indexOf(a);
+      if (dir === 'left')  return focusEl(nav[(i - 1 + nav.length) % nav.length]);
+      if (dir === 'right') return focusEl(nav[(i + 1) % nav.length]);
+      if (dir === 'up')    return focusEl(confirmBtn);
+      if (dir === 'down')  return;
+    }
+
+    focusEl(search);
+  }
+
+  function activateFocused(){
+    const el = document.activeElement;
+    if (!el) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+    el.click?.();
+  }
+
+  // KEYBOARD: intercepta flechas para navegar también desde search
+  phone.addEventListener('keydown', (e) => {
+    const k = e.key;
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)){
+      e.preventDefault();
+      move(k.replace('Arrow','').toLowerCase());
+      return;
+    }
+    if (k === 'Enter'){
+      if (isManaged(document.activeElement)){
+        e.preventDefault();
+        activateFocused();
+      }
+    }
+  });
+
+  // ===== GAMEPAD: 1 step per press (edge-trigger), D-pad only =====
+  const prevDpad = { up:false, down:false, left:false, right:false };
+  const prevA = { pressed:false };
+
+  function readDpad(gp){
+    return {
+      left:  !!gp.buttons[14]?.pressed,
+      right: !!gp.buttons[15]?.pressed,
+      up:    !!gp.buttons[12]?.pressed,
+      down:  !!gp.buttons[13]?.pressed
+    };
+  }
+  function justPressed(now, prev){ return now && !prev; }
+
+  function ensureFocus(){
+    if (!isManaged(document.activeElement)) focusEl(search);
+  }
+
+  function pollGamepad(){
+    const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gp = gps && gps[0];
+
+    if (gp){
+      ensureFocus();
+
+      const d = readDpad(gp);
+
+      if (justPressed(d.left,  prevDpad.left))  move('left');
+      if (justPressed(d.right, prevDpad.right)) move('right');
+      if (justPressed(d.up,    prevDpad.up))    move('up');
+      if (justPressed(d.down,  prevDpad.down))  move('down');
+
+      prevDpad.left  = d.left;
+      prevDpad.right = d.right;
+      prevDpad.up    = d.up;
+      prevDpad.down  = d.down;
+
+      const aNow = !!gp.buttons[0]?.pressed;
+      if (aNow && !prevA.pressed) activateFocused();
+      prevA.pressed = aNow;
+    }
+
+    requestAnimationFrame(pollGamepad);
+  }
+  requestAnimationFrame(pollGamepad);
+
+  // Initial focus
+  focusEl(search);
+})();
 </script>
 
 </body>
