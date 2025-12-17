@@ -362,11 +362,12 @@ mode.addEventListener("change", updateFilter);
 strength.addEventListener("input", updateFilter);
 updateFilter();
 
-/* ==========================
-   GAMEPAD + TECLADO (D-PAD)
-   - SELECT circular (wrap)
-   - SLIDER: 5 por defecto, 1 si A está mantenido
-   ========================== */
+  // =========================
+  // GAMEPAD: 1 paso por botón presionado
+  // (sin autorepeat ignora sticks pero así la navegación con las flechas es mejor)
+  //- SELECT circular (wrap)
+  //- SLIDER: 5 por defecto, 1 si A está mantenido
+  // =========================
 (() => {
   const phone = document.getElementById('app-screen');
   const content = phone.querySelector('.content');
@@ -382,7 +383,7 @@ updateFilter();
   const basketNav = document.getElementById('basketNav');
   const nav = [homeNav, exploreNav, basketNav];
 
-  // Estado A mantenido (mando y teclado para test)
+  // Estado A mantenido en mando y teclado para poder probar bien
   let aHeld = false;
   window.addEventListener('keydown', (e) => { if (e.code === 'Space') aHeld = true; });
   window.addEventListener('keyup',   (e) => { if (e.code === 'Space') aHeld = false; });

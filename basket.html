@@ -390,7 +390,7 @@
   const firstProduct = products[0] || null;
   const lastProduct  = products[products.length - 1] || null;
 
-  // ---- mark focusable
+  // Marca del foco
   function mark(el, group){
     el.classList.add('focusable');
     el.dataset.group = group;
@@ -402,7 +402,7 @@
   mark(checkoutLink,'checkout');
   navItems.forEach(el => mark(el,'nav'));
 
-  // Products: focusable is the full rectangle
+  // Los productos deben marcarse con un rectángulo grande
   products.forEach((p, idx) => {
     p.setAttribute('role','button');
     p.setAttribute('tabindex','0');
@@ -412,7 +412,7 @@
     mark(p,'content');
   });
 
-  // ---- click behaviors
+  // Comportamiento al hacer click
   homeNav.addEventListener('click', () => {
     const href = homeNav.dataset.href;
     if (href) window.location.href = href;
@@ -440,7 +440,7 @@
   clickOnEnterSpace(discountBtn);
   products.forEach(clickOnEnterSpace);
 
-  // ---- focus helpers
+  // Gestor del foco
   function focusEl(el){
     if (!el) return;
     el.focus({ preventScroll: true });
@@ -450,7 +450,7 @@
     return !!(el && el.classList && el.classList.contains('focusable'));
   }
 
-  // ---- Spatial fallback (rarely used; explicit graph covers most)
+  // Fallback
   function getCenter(rect){ return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 }; }
   function getFocusableVisible(){
     const all = [...document.querySelectorAll('.focusable')];
@@ -494,7 +494,7 @@
     if (best) focusEl(best);
   }
 
-  // ---- Explicit focus graph rules
+  // Reglas específicas
   function move(dir){
     const active = document.activeElement;
 
@@ -508,7 +508,7 @@
       if (dir === 'left') return focusEl(search);
     }
 
-    // NAV
+    // NAVEGACI´ON
     if (active?.dataset?.group === 'nav'){
       const i = navItems.indexOf(active);
       if (dir === 'left')  return focusEl(navItems[(i - 1 + navItems.length) % navItems.length]);
@@ -524,7 +524,7 @@
       if (dir === 'down') return focusEl(navItems[1] || navItems[0]);
     }
 
-    // COUPON INPUT
+    // CUPÓN
     if (active === couponInput){
       if (dir === 'up')    return focusEl(lastProduct);
       if (dir === 'down')  return focusEl(discountBtn);
@@ -532,7 +532,7 @@
       if (dir === 'left')  return;
     }
 
-    // DISCOUNT BUTTON
+    // BOTÓN DE DESCUENTO
     if (active === discountBtn){
       if (dir === 'left')  return;
       if (dir === 'right') return focusEl(checkoutLink);
@@ -540,7 +540,7 @@
       if (dir === 'down')  return focusEl(navItems[1] || navItems[0]);
     }
 
-    // CONTENT bottom edge -> coupon input
+    // De la barra de abajo al cupón
     if (active?.dataset?.group === 'content' && dir === 'down'){
       const aRect = active.getBoundingClientRect();
       const cRect = content.getBoundingClientRect();
@@ -563,7 +563,7 @@
     el.click?.();
   }
 
-  // Keyboard
+  // Teclado
   phone.addEventListener('keydown', (e) => {
     const k = e.key;
     if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)){
@@ -580,8 +580,8 @@
   });
 
   // =========================
-  // GAMEPAD: 1 step per press
-  // (sin autorepeat; ignora sticks)
+  // GAMEPAD: 1 paso por botón presionado
+  // (sin autorepeat ignora sticks pero así la navegación con las flechas es mejor)
   // =========================
   const prevDpad = { up:false, down:false, left:false, right:false };
   const prevA = { pressed:false };
@@ -628,8 +628,8 @@
   }
   requestAnimationFrame(pollGamepad);
 
-  // Initial focus
-  focusEl(search);
+  // Focus inicial
+  focusEl(checkoutLink);
 })();
 </script>
 </body>

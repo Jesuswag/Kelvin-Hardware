@@ -66,7 +66,7 @@
   }
   .nav-item img{width:42px;height:42px;filter:brightness(0) invert(1);}
 
-  /* Focus ring only */
+  /* Solo anillo de focus */
   .focusable{ outline:none; }
   .focusable:focus-visible{
     outline: 3px solid var(--accent);
@@ -132,12 +132,10 @@ methods.forEach(m=>m.addEventListener('click',()=>{
   m.classList.add('selected');
 }));
 
-/* ==========================
-   GAMEPAD + TECLADO (D-PAD)
-   - 1 paso por pulsación (edge-trigger)
-   - D-pad only (sin sticks)
-   - Right desde search -> perfil
-   ========================== */
+  // =========================
+  // GAMEPAD: 1 paso por botón presionado
+  // (sin autorepeat ignora sticks pero así la navegación con las flechas es mejor)
+  // =========================
 (() => {
   const phone = document.getElementById('rentalApp');
   const content = phone.querySelector('.content');
@@ -230,7 +228,7 @@ methods.forEach(m=>m.addEventListener('click',()=>{
       if (dir === 'left') return;
     }
 
-    // PAY
+    // PAGO
     if (a?.dataset?.group === 'pay'){
       const i = pms.indexOf(a);
       if (dir === 'left')  return focusEl(pms[Math.max(0, i-1)]);
@@ -266,7 +264,7 @@ methods.forEach(m=>m.addEventListener('click',()=>{
     el.click?.();
   }
 
-  // KEYBOARD: intercepta flechas para navegar también desde search
+  // TECLADO: intercepta flechas para navegar también desde search
   phone.addEventListener('keydown', (e) => {
     const k = e.key;
     if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k)){
@@ -282,7 +280,7 @@ methods.forEach(m=>m.addEventListener('click',()=>{
     }
   });
 
-  // ===== GAMEPAD: 1 step per press (edge-trigger), D-pad only =====
+  // MANDO:
   const prevDpad = { up:false, down:false, left:false, right:false };
   const prevA = { pressed:false };
 
@@ -328,8 +326,8 @@ methods.forEach(m=>m.addEventListener('click',()=>{
   }
   requestAnimationFrame(pollGamepad);
 
-  // Initial focus
-  focusEl(search);
+  // Foco inicial en efectivo
+  focusEl(pm2);
 })();
 </script>
 

@@ -169,7 +169,7 @@
     border-top-right-radius:20px;
     box-shadow:0 -6px 20px rgba(0,0,0,0.45);
     padding:10px;
-    z-index:10; /* cubre parte del contenido (intencional) */
+    z-index:10; /* cubre parte del contenido pero es intencional */
   }
 
   .nav-item img{
@@ -277,11 +277,6 @@ window.addEventListener('message', e =>{
   if(e.data?.colorblindMode){ applyColorblind(e.data.colorblindMode); }
 });
 
-/* ==========================
-   GAMEPAD + TECLADO (D-PAD)
-   - 1 paso por pulsación (D-pad edge-trigger)
-   - ignora sticks para evitar drift
-   ========================== */
 (() => {
   const phone = document.querySelector('.phone');
   const content = document.querySelector('.content');
@@ -299,7 +294,7 @@ window.addEventListener('message', e =>{
     document.getElementById('tool-chainsaw'),
     document.getElementById('tool-spatula')
   ];
-  const toolCenter = tools[1]; // subir desde nav -> foco al centro
+  const toolCenter = tools[1]; // foco al centro cuando subo desde la barra de navegación de abajo
 
   function mark(el, group){
     el.classList.add('focusable');
@@ -398,7 +393,11 @@ window.addEventListener('message', e =>{
     }
   });
 
-  // ===== GAMEPAD: 1 step per press (edge-trigger), D-pad only =====
+  // =========================
+  // GAMEPAD: 1 paso por botón presionado
+  // (sin autorepeat ignora sticks pero así la navegación con las flechas es mejor)
+  // =========================
+
   const prevDpad = { up:false, down:false, left:false, right:false };
   const prevA = { pressed:false };
 
